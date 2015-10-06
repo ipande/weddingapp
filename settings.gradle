@@ -1,0 +1,2 @@
+include ':slidingTabStripLib'
+include ':app'

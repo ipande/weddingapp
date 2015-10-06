@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="252dp"
+        android:id="@+id/event_cover"
+        android:adjustViewBounds="true"
+        android:layout_gravity="center_horizontal" />
+
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:weightSum="1">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/event_time_image"
+            android:src="@drawable/clock" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Event Date and Time"
+            android:id="@+id/event_date_time"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/event_time_image"
+            android:layout_toEndOf="@+id/event_time_image" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="x days to go"
+            android:id="@+id/event_x_days_togo"
+            android:layout_below="@+id/event_date_time"
+            android:layout_toRightOf="@+id/event_time_image"
+            android:layout_toEndOf="@+id/event_time_image" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:weightSum="1"
+        android:id="@+id/address_info">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/event_location_image"
+            android:src="@drawable/location_marker" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Event Location"
+            android:id="@+id/event_location_title"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/event_location_image"
+            android:layout_toEndOf="@+id/event_location_image" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="detailed addressTitle"
+            android:id="@+id/event_location_detail"
+            android:layout_below="@+id/event_location_title"
+            android:layout_toRightOf="@+id/event_location_image"
+            android:layout_toEndOf="@+id/event_location_image" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:weightSum="1">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/event_menu_icon"
+            android:src="@drawable/menu_icon" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Menu Cusine"
+            android:id="@+id/event_menu"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/event_menu_icon"
+            android:layout_toEndOf="@+id/event_menu_icon" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Detailed description of mouth watering dishes"
+            android:id="@+id/event_menu_detail"
+            android:layout_below="@+id/event_menu"
+            android:layout_toRightOf="@+id/event_menu_icon"
+            android:layout_toEndOf="@+id/event_menu_icon" />
+
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Event Invite Text"
+        android:id="@+id/event_invite_details"
+        android:layout_gravity="center_horizontal" />
+
+</LinearLayout>

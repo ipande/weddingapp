@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">SocialShaadi</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="sign_in">Sign In</string>
+    <string name="register">Register</string>
+    <string name="app_title">Welcome to Social Shaadi!</string>
+    <string name="facebook_app_id">1412571405719720</string>
+    <string name="displayPicsStr">Display Pictures</string>
+    <string name="title_activity_hello_grid_view">HelloGridView</string>
+    <string name="title_activity_event">Event Name</string>
+
+    <string name="title_activity_splash_screen">SplashScreen</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="navigate_to_event">Navigate to event using Maps?</string>
+    <string name="navigate">Navigate</string>
+    <string name="cancel">Cancel</string>
+</resources>
