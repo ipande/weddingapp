@@ -24,7 +24,7 @@ import com.astuetz.PagerSlidingTabStrip;
 import desipride.socialshaadi.R;
 
 public class ShaadiActivity extends FragmentActivity {
-
+    private static final String TAG = ShaadiActivity.class.getSimpleName();
 	private final Handler handler = new Handler();
 
 	private PagerSlidingTabStrip tabs;
@@ -32,6 +32,7 @@ public class ShaadiActivity extends FragmentActivity {
 	private MyPagerAdapter adapter;
     private EventsFragment eventsFragment;
 	private AboutUsFragment aboutUsFragment;
+	private NewsFeedFragment newsFeedFragment;
 
 	private Drawable oldBackground = null;
 	private int currentColor = R.color.orange;
@@ -43,6 +44,7 @@ public class ShaadiActivity extends FragmentActivity {
 
         eventsFragment = new EventsFragment();
 		aboutUsFragment = new AboutUsFragment();
+		newsFeedFragment = new NewsFeedFragment();
 		tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
 		pager = (ViewPager) findViewById(R.id.pager);
 		adapter = new MyPagerAdapter(getSupportFragmentManager());
@@ -202,12 +204,11 @@ public class ShaadiActivity extends FragmentActivity {
                     fragment = aboutUsFragment;
 					break;
 				case 2:
-                    fragment = SuperAwesomeCardFragment.newInstance(position);
+                    fragment = newsFeedFragment;
 					break;
 			}
 			return fragment;
 		}
 
 	}
-
 }
