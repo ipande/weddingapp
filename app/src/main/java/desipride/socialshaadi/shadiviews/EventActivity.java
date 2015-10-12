@@ -2,11 +2,11 @@ package desipride.socialshaadi.shadiviews;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,6 +14,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.security.InvalidParameterException;
 
@@ -61,8 +63,7 @@ public class EventActivity extends ActionBarActivity {
         dateTime.setText(event.getDateTimeString());
         locationTitle.setText(event.getAddressTitle());
         locationDetails.setText(event.getAddressDetails());
-        eventCoverImage.setImageResource(event.getCoverPage());
-
+        Picasso.with(this).load(event.getCoverPage()).into(eventCoverImage);
         addressInfo = (RelativeLayout)findViewById(R.id.address_info);
         addressInfo.setOnClickListener(new View.OnClickListener() {
             @Override
