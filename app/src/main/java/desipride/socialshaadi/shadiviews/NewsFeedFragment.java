@@ -40,23 +40,27 @@ import java.util.List;
 
 import desipride.socialshaadi.R;
 import desipride.socialshaadi.desipride.socialshaadi.utils.ConfigData;
+import desipride.socialshaadi.desipride.socialshaadi.utils.Constants;
 import desipride.socialshaadi.desipride.socialshaadi.utils.CursorRecyclerViewAdapter;
 import desipride.socialshaadi.shadidata.NewsFeedDataSource;
 import desipride.socialshaadi.shadidata.NewsFeedItem;
+
+import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.*;
+import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.CONNECTION_ERR;
+import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.HTTP_PREFIX;
+import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.IMAGE_UPLOAD_CANCELLED;
+import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.IMAGE_UPLOAD_FAILURE;
+import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.IMAGE_UPLOAD_SUCCESS;
+import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.NEWSFEED_NOT_REFRESHED;
+import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.SELECT_FILE;
+import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.TASK_ABORTED;
+import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.UPLOAD_IMAGE;
 
 /**
  * Created by parth.mehta on 10/4/15.
  */
 public class NewsFeedFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener{
     public static final String TAG = NewsFeedFragment.class.getSimpleName();
-    public static final int SELECT_FILE = 1;
-    public static final int UPLOAD_IMAGE = 2;
-    public static final int CONNECTION_ERR = 35;
-    public static final int TASK_ABORTED = 36;
-    public static final String IMAGE_UPLOAD_SUCCESS = "Picture uploaded";
-    public static final String IMAGE_UPLOAD_FAILURE = "Connection Error:Picture could not be uploaded";
-    public static final String IMAGE_UPLOAD_CANCELLED = "Picture upload cancelled";
-    public static final String NEWSFEED_NOT_REFRESHED = "Newsfeed could not be refreshed";
 
     ImageView uploadPictureButton;
     NewsFeedCursorAdapter newsFeedCursorAdapter;
@@ -143,10 +147,10 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
                     refreshNewsFeed();
                 } else if(resultCode == Activity.RESULT_CANCELED) {
                     Log.d(TAG, "Result Cancelled, image not uploaded");
-                } else if(resultCode == NewsFeedFragment.TASK_ABORTED) {
+                } else if(resultCode == TASK_ABORTED) {
                     Log.d(TAG, "Task Aborted");
                     Toast.makeText(getActivity(), IMAGE_UPLOAD_CANCELLED, Toast.LENGTH_LONG).show();
-                } else if(resultCode == NewsFeedFragment.CONNECTION_ERR) {
+                } else if(resultCode ==CONNECTION_ERR) {
                     Log.d(TAG, "Connection Error, image could not be uploaded");
                     Toast.makeText(getActivity(), IMAGE_UPLOAD_FAILURE, Toast.LENGTH_LONG).show();
                 }
@@ -162,7 +166,7 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
         newsFeedRefreshLayout.setRefreshing(true);
         RefreshNewsFeedAsyncTask task = new RefreshNewsFeedAsyncTask(getActivity());
         Log.d(TAG,"Refreshing news feed");
-        task.execute();
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override
@@ -208,7 +212,6 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
     }
 
     private class RefreshNewsFeedAsyncTask extends AsyncTask<Void,Void,Integer> {
-        private static final int CONNECTION_TIMEOUT_MS = 5000;
         Gson gson;
         Context context;
         Cursor cursor;
@@ -219,8 +222,7 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
             this.context = context;
         }
 
-        private static final String HTTP_PREFIX = "http://";
-        private static final String GET_NEWSFEED_URL = "/newsfeed";
+
         @Override
         protected void onPreExecute() {
 

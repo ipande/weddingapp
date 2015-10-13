@@ -8,7 +8,7 @@ import desipride.socialshaadi.R;
 /**
  * Created by parth.mehta on 10/12/15.
  */
-public class ConfigData {
+public final class ConfigData {
 
     private static String serverHostName;
 

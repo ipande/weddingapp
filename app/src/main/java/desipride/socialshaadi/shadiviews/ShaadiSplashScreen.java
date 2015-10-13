@@ -12,7 +12,7 @@ import desipride.socialshaadi.R;
 
 public class ShaadiSplashScreen extends Activity {
     // Splash screen timer
-    private static int SPLASH_TIME_OUT = 7000;
+    private static int SPLASH_TIME_OUT = 6400;
     /**
      * The thread to process splash screen events
      */

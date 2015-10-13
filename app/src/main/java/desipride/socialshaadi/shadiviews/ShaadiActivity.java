@@ -18,7 +18,6 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.astuetz.PagerSlidingTabStrip;
 
@@ -138,13 +137,6 @@ public class ShaadiActivity extends FragmentActivity {
 		}
 
 		currentColor = newColor;
-
-	}
-
-	public void onColorClicked(View v) {
-
-		int color = Color.parseColor(v.getTag().toString());
-		changeColor(color);
 
 	}
 

@@ -36,6 +36,9 @@ import java.io.InputStreamReader;
 import desipride.socialshaadi.R;
 import desipride.socialshaadi.desipride.socialshaadi.utils.ConfigData;
 
+import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.*;
+
+
 public class ImageUploadActivity extends ActionBarActivity implements View.OnClickListener{
     private static final String TAG = ImageUploadActivity.class.getSimpleName();
     ImageView imageToUpload;
@@ -77,16 +80,10 @@ public class ImageUploadActivity extends ActionBarActivity implements View.OnCli
     }
 
     public class ImageUploadTask extends AsyncTask<Void, Void, Integer> {
-        private static final int CONNECTION_TIMEOUT_MS = 5000;
-        private static final String SAMPLE_FILE_NAME = "sample.jpg";
-        private static final String HTTP_PREFIX = "http://";
-        private static final String IMAGE_UPLOAD_URL = "/photos";
+
         private Bitmap imageBitmap;
         private ProgressDialog progressDialog;
-        private static final int RESULT_SUCCESS = 1;
-        private static final int RESULT_FAILURE = 0;
-        private static final int RESULT_ABORTED = 2;
-        private static final String RESPONSE_SUCCESS = "{file_uploaded}";
+
         private HttpClient httpClient;
         private HttpPost postRequest;
         private boolean requestAborted = false;
@@ -136,15 +133,15 @@ public class ImageUploadActivity extends ActionBarActivity implements View.OnCli
                 progressDialog.dismiss();
             }
             Intent resultIntent = new Intent();
-            if(result == RESULT_SUCCESS) {
+            if(result == UPLOAD_RESULT_SUCCESS) {
                 Log.d(TAG, "Image is uploaded, sending result back to actvity");
                 setResult(Activity.RESULT_OK, resultIntent);
-            } else if(result == RESULT_ABORTED) {
+            } else if(result == UPLOAD_RESULT_ABORTED) {
                 Log.d(TAG, "Image could not be uploaded, Task Cancelled");
-                setResult(NewsFeedFragment.TASK_ABORTED, resultIntent);
+                setResult(TASK_ABORTED, resultIntent);
             } else {
                 Log.d(TAG, "Image could not be uploaded, sending result back to actvity");
-                setResult(NewsFeedFragment.CONNECTION_ERR, resultIntent);
+                setResult(CONNECTION_ERR, resultIntent);
             }
 
             finish();
@@ -165,6 +162,7 @@ public class ImageUploadActivity extends ActionBarActivity implements View.OnCli
                 reqEntity.addPart("caption", new StringBody(caption));
                 postRequest.setEntity(reqEntity);
                 HttpResponse response = httpClient.execute(postRequest);
+
                 BufferedReader reader = new BufferedReader(new InputStreamReader(
                         response.getEntity().getContent(), "UTF-8"));
                 String sResponse;
@@ -175,17 +173,17 @@ public class ImageUploadActivity extends ActionBarActivity implements View.OnCli
                 }
                 String responseData = s.toString();
                 if(responseData.equals(RESPONSE_SUCCESS)) {
-                    return RESULT_SUCCESS;
+                    return UPLOAD_RESULT_SUCCESS;
                 } else {
-                    return RESULT_FAILURE;
+                    return UPLOAD_RESULT_FAILURE;
                 }
             } catch (Exception e) {
 
                 Log.e(e.getClass().getName(), e.getMessage());
                 if(requestAborted) {
-                    return RESULT_ABORTED;
+                    return UPLOAD_RESULT_ABORTED;
                 } else {
-                    return RESULT_FAILURE;
+                    return UPLOAD_RESULT_FAILURE;
                 }
 
             }

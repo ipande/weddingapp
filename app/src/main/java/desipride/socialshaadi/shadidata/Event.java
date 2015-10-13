@@ -5,6 +5,8 @@ import android.net.Uri;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import desipride.socialshaadi.desipride.socialshaadi.utils.Constants;
+
 /**
  * Created by parth.mehta on 9/15/15.
  */
@@ -100,20 +102,19 @@ public class Event {
             return null;
 
         StringBuilder buffer = new StringBuilder();
-        buffer.append(new SimpleDateFormat("EEE, d MMM yyyy, hh:mm a").format(startTime));
+        buffer.append(new SimpleDateFormat(Constants.DATE_FORMAT).format(startTime));
         if(endTime == null) {
             buffer.append(" onwards");
         } else {
-            buffer.append(new SimpleDateFormat("to hh:mm a").format(endTime));
+            buffer.append(new SimpleDateFormat(Constants.TIME_FORMAT).format(endTime));
         }
         return buffer.toString();
     }
 
     public String getEventDateString() {
         if(startTime != null) {
-            return new SimpleDateFormat("EEE, d MMM yyyy").format(startTime);
-        } else {
-            return null;
+            return new SimpleDateFormat(Constants.DATE_FORMAT).format(startTime);
         }
+        return null;
     }
 }

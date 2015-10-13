@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import desipride.socialshaadi.R;
+import desipride.socialshaadi.desipride.socialshaadi.utils.Constants;
 
 /**
  * Created by parth.mehta on 9/15/15.
@@ -62,7 +63,7 @@ public class EventData {
     public static ArrayList<Event> getEvents() {
         if(events == null) {
             events = new ArrayList<Event>(10);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
+            SimpleDateFormat dateFormat = new SimpleDateFormat(Constants.MM_DD_YY);
             Date dateStart = null;
             Date dateEnd = null;
             Uri uri = null;
