@@ -11,6 +11,20 @@
     <item
         android:drawable="@drawable/pp3"
         android:duration="200"/>
+    <item
+        android:drawable="@drawable/pp4"
+        android:duration="200"/>
+    <item
+        android:drawable="@drawable/pp5"
+        android:duration="200"/>
+
+    <item
+        android:drawable="@drawable/pp6"
+        android:duration="200"/>
+
+    <item
+        android:drawable="@drawable/pp7"
+        android:duration="200"/>
 
 
 </animation-list>
