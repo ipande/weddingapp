@@ -18,4 +18,7 @@
     <string name="navigate">Navigate</string>
     <string name="cancel">Cancel</string>
     <string name="title_activity_our_story">Our Story</string>
+    <string name="server_prefs_file">desipride.socialshaadi.SERVER_PREFS_FILE</string>
+    <string name="server_hostname">hostname</string>
+    <string name="default_hostname">localhost:5000</string>
 </resources>

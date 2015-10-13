@@ -1,7 +1,9 @@
 package desipride.socialshaadi.shadiviews;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -15,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -34,6 +37,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 import desipride.socialshaadi.R;
+import desipride.socialshaadi.desipride.socialshaadi.utils.ConfigData;
 import desipride.socialshaadi.desipride.socialshaadi.utils.CursorRecyclerViewAdapter;
 import desipride.socialshaadi.shadidata.NewsFeedDataSource;
 import desipride.socialshaadi.shadidata.NewsFeedItem;
@@ -41,7 +45,7 @@ import desipride.socialshaadi.shadidata.NewsFeedItem;
 /**
  * Created by parth.mehta on 10/4/15.
  */
-public class NewsFeedFragment extends Fragment implements View.OnClickListener{
+public class NewsFeedFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener{
     public static final String TAG = NewsFeedFragment.class.getSimpleName();
     public static final int SELECT_FILE = 1;
     public static final int UPLOAD_IMAGE = 2;
@@ -68,6 +72,8 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener{
         View view = inflater.inflate(R.layout.news_feed_frament, container, false);
         refreshButton = (Button)view.findViewById(R.id.refresh_button);
         refreshButton.setOnClickListener(this);
+        refreshButton.setLongClickable(true);
+        refreshButton.setOnLongClickListener(this);
         uploadPictureButton = (ImageView)view.findViewById(R.id.upload_image_button);
         uploadPictureButton.setOnClickListener(this);
         loadingIcon = (ProgressBar)view.findViewById(R.id.loading_icon);
@@ -163,6 +169,48 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener{
         task.execute();
     }
 
+    @Override
+    public boolean onLongClick(View v) {
+        // get prompts.xml view
+        LayoutInflater li = LayoutInflater.from(getActivity());
+        View promptsView = li.inflate(R.layout.server_address_dialog, null);
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                getActivity());
+
+        // set prompts.xml to alertdialog builder
+        alertDialogBuilder.setView(promptsView);
+
+        final EditText userInput = (EditText) promptsView
+                .findViewById(R.id.editTextDialogUserInput);
+
+        // set dialog message
+        alertDialogBuilder
+                .setCancelable(false)
+                .setPositiveButton("OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int id) {
+                                // get user input and set it to result
+                                // edit text
+                                ConfigData.setServerHostname(userInput.getText().toString(),getActivity());
+                            }
+                        })
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        // show it
+        alertDialog.show();
+
+        return true;
+    }
+
     private class RefreshNewsFeedAsyncTask extends AsyncTask<Void,Void,Integer> {
         Gson gson;
         Context context;
@@ -171,8 +219,8 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener{
             gson = new Gson();
             this.context = context;
         }
-
-        private static final String GET_NEWSFEED_URL = "http://10.0.3.2:5000/newsfeed";
+        private static final String HTTP_PREFIX = "http://";
+        private static final String GET_NEWSFEED_URL = "/newsfeed";
         @Override
         protected void onPreExecute() {
             setLoadingIconVisibility(true);
@@ -183,7 +231,7 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener{
             String responseData = null;
             try {
                 HttpClient httpclient = new DefaultHttpClient();
-                HttpResponse response = httpclient.execute(new HttpGet(GET_NEWSFEED_URL));
+                HttpResponse response = httpclient.execute(new HttpGet(HTTP_PREFIX + ConfigData.getServerHostname(context) + GET_NEWSFEED_URL));
                 BufferedReader reader = null;
 
 

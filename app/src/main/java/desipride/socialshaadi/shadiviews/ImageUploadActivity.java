@@ -34,6 +34,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 
 import desipride.socialshaadi.R;
+import desipride.socialshaadi.desipride.socialshaadi.utils.ConfigData;
 
 public class ImageUploadActivity extends ActionBarActivity implements View.OnClickListener{
     private static final String TAG = ImageUploadActivity.class.getSimpleName();
@@ -78,7 +79,8 @@ public class ImageUploadActivity extends ActionBarActivity implements View.OnCli
     public class ImageUploadTask extends AsyncTask<Void, Void, Integer> {
         private static final int CONNECTION_TIMEOUT_MS = 5000;
         private static final String SAMPLE_FILE_NAME = "sample.jpg";
-        private static final String IMAGE_UPLOAD_URL = "http://10.0.3.2:5000/upload";
+        private static final String HTTP_PREFIX = "http://";
+        private static final String IMAGE_UPLOAD_URL = "/upload";
         private Bitmap imageBitmap;
         private ProgressDialog progressDialog;
         private static final int RESULT_SUCCESS = 1;
@@ -89,11 +91,13 @@ public class ImageUploadActivity extends ActionBarActivity implements View.OnCli
         private HttpPost postRequest;
         private boolean requestAborted = false;
         private String caption;
+        private Context context;
 
 
         public ImageUploadTask(Context context, Bitmap imageBitmap, String caption) {
             this.imageBitmap = imageBitmap;
             this.caption = caption;
+            this.context = context;
 
             final HttpParams httpParams = new BasicHttpParams();
             HttpConnectionParams.setConnectionTimeout(httpParams, CONNECTION_TIMEOUT_MS);
@@ -152,7 +156,7 @@ public class ImageUploadActivity extends ActionBarActivity implements View.OnCli
                 imageBitmap.compress(Bitmap.CompressFormat.JPEG, 75, bos);
                 byte[] data = bos.toByteArray();
 
-                postRequest = new HttpPost(IMAGE_UPLOAD_URL);
+                postRequest = new HttpPost(HTTP_PREFIX+ ConfigData.getServerHostname(context)+IMAGE_UPLOAD_URL);
                 ByteArrayBody bab = new ByteArrayBody(data, SAMPLE_FILE_NAME);
                 MultipartEntity reqEntity = new MultipartEntity(
                         HttpMultipartMode.BROWSER_COMPATIBLE);
