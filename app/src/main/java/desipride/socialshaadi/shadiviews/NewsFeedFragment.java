@@ -10,16 +10,15 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,10 +55,8 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
     public static final String IMAGE_UPLOAD_CANCELLED = "Picture upload cancelled";
 
     ImageView uploadPictureButton;
-    Button refreshButton;
-    NewsFeedAdapter newsFeedAdapter;
     NewsFeedCursorAdapter newsFeedCursorAdapter;
-    ProgressBar loadingIcon;
+    SwipeRefreshLayout newsFeedRefreshLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,13 +67,11 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.news_feed_frament, container, false);
-        refreshButton = (Button)view.findViewById(R.id.refresh_button);
-        refreshButton.setOnClickListener(this);
-        refreshButton.setLongClickable(true);
-        refreshButton.setOnLongClickListener(this);
         uploadPictureButton = (ImageView)view.findViewById(R.id.upload_image_button);
         uploadPictureButton.setOnClickListener(this);
-        loadingIcon = (ProgressBar)view.findViewById(R.id.loading_icon);
+        uploadPictureButton.setLongClickable(true);
+        uploadPictureButton.setOnLongClickListener(this);
+        newsFeedRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.newsfeed_swipe_refresh_layout);
 
         RecyclerView recyclerNewsFeedView = (RecyclerView) view.findViewById(R.id.newsfeed);
         recyclerNewsFeedView.setHasFixedSize(true);
@@ -89,6 +84,13 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
                 NewsFeedDataSource.queryAllNewsFeedItemsGetCursor(getActivity()));
         recyclerNewsFeedView.setAdapter(newsFeedCursorAdapter);
         refreshNewsFeed();
+
+        newsFeedRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshNewsFeed();
+            }
+        });
         return view;
     }
 
@@ -97,10 +99,6 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
         switch(v.getId()) {
             case R.id.upload_image_button:
                 openGallery(SELECT_FILE);
-                break;
-            case R.id.refresh_button:
-                Log.d(TAG,"Refresh my news Feed Boy!!");
-                refreshNewsFeed();
                 break;
         }
     }
@@ -115,7 +113,7 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
 
 
     private void onImageSelected(Uri imageUri) {
-        Intent i = new Intent(getActivity(),ImageUploadActivity.class);
+        Intent i = new Intent(getActivity(), ImageUploadActivity.class);
         i.setData(imageUri);
         startActivityForResult(i, UPLOAD_IMAGE);
     }
@@ -155,13 +153,6 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
         }
     }
 
-    private void setLoadingIconVisibility(boolean visibility) {
-        if(visibility) {
-            loadingIcon.setVisibility(View.VISIBLE);
-        } else {
-            loadingIcon.setVisibility(View.GONE);
-        }
-    }
 
     private void refreshNewsFeed() {
         RefreshNewsFeedAsyncTask task = new RefreshNewsFeedAsyncTask(getActivity());
@@ -192,7 +183,7 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
                             public void onClick(DialogInterface dialog,int id) {
                                 // get user input and set it to result
                                 // edit text
-                                ConfigData.setServerHostname(userInput.getText().toString(),getActivity());
+                                ConfigData.setServerHostname(userInput.getText().toString(), getActivity());
                             }
                         })
                 .setNegativeButton("Cancel",
@@ -223,7 +214,7 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
         private static final String GET_NEWSFEED_URL = "/newsfeed";
         @Override
         protected void onPreExecute() {
-            setLoadingIconVisibility(true);
+
         }
 
         @Override
@@ -266,7 +257,7 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
         @Override
         protected void onPostExecute(Integer result) {
             newsFeedCursorAdapter.changeCursor(cursor);
-            setLoadingIconVisibility(false);
+            newsFeedRefreshLayout.setRefreshing(false);
         }
 
     }
