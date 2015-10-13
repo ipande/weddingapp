@@ -29,6 +29,9 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -53,6 +56,7 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
     public static final String IMAGE_UPLOAD_SUCCESS = "Picture uploaded";
     public static final String IMAGE_UPLOAD_FAILURE = "Connection Error:Picture could not be uploaded";
     public static final String IMAGE_UPLOAD_CANCELLED = "Picture upload cancelled";
+    public static final String NEWSFEED_NOT_REFRESHED = "Newsfeed could not be refreshed";
 
     ImageView uploadPictureButton;
     NewsFeedCursorAdapter newsFeedCursorAdapter;
@@ -155,6 +159,7 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
 
 
     private void refreshNewsFeed() {
+        newsFeedRefreshLayout.setRefreshing(true);
         RefreshNewsFeedAsyncTask task = new RefreshNewsFeedAsyncTask(getActivity());
         Log.d(TAG,"Refreshing news feed");
         task.execute();
@@ -203,9 +208,12 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
     }
 
     private class RefreshNewsFeedAsyncTask extends AsyncTask<Void,Void,Integer> {
+        private static final int CONNECTION_TIMEOUT_MS = 5000;
         Gson gson;
         Context context;
         Cursor cursor;
+        private final static int SUCCESS = 0;
+        private final static int ERROR = -1;
         public RefreshNewsFeedAsyncTask(Context context) {
             gson = new Gson();
             this.context = context;
@@ -222,7 +230,9 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
         protected Integer doInBackground(Void... params) {
             String responseData = null;
             try {
-                HttpClient httpclient = new DefaultHttpClient();
+                final HttpParams httpParams = new BasicHttpParams();
+                HttpConnectionParams.setConnectionTimeout(httpParams, CONNECTION_TIMEOUT_MS);
+                HttpClient httpclient = new DefaultHttpClient(httpParams);
                 HttpResponse response = httpclient.execute(new HttpGet(HTTP_PREFIX + ConfigData.getServerHostname(context) + GET_NEWSFEED_URL));
                 BufferedReader reader = null;
 
@@ -239,11 +249,12 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
                 responseData = s.toString();
                 Log.d(TAG,responseData);
             } catch (IOException e) {
-                e.printStackTrace();
-                return null;
+                Log.e(TAG,"",e);
+                return ERROR;
             }
 
             NewsFeedItem items[] = gson.fromJson(responseData, NewsFeedItem[].class);
+
             for(NewsFeedItem item : items) {
                 Log.d(TAG,"Adding Item to database: " + item);
                 NewsFeedDataSource.insertNewsFeedItem(item,context);
@@ -252,12 +263,16 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
             cursor = NewsFeedDataSource.queryAllNewsFeedItemsGetCursor(context);
 
 
-            return null;
+            return SUCCESS;
         }
 
         @Override
         protected void onPostExecute(Integer result) {
-            newsFeedCursorAdapter.changeCursor(cursor);
+            if(result == SUCCESS) {
+                newsFeedCursorAdapter.changeCursor(cursor);
+            } else {
+                Toast.makeText(getActivity(),NEWSFEED_NOT_REFRESHED,Toast.LENGTH_SHORT).show();
+            }
             newsFeedRefreshLayout.setRefreshing(false);
         }
 

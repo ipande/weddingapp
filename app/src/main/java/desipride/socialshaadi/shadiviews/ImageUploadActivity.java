@@ -80,7 +80,7 @@ public class ImageUploadActivity extends ActionBarActivity implements View.OnCli
         private static final int CONNECTION_TIMEOUT_MS = 5000;
         private static final String SAMPLE_FILE_NAME = "sample.jpg";
         private static final String HTTP_PREFIX = "http://";
-        private static final String IMAGE_UPLOAD_URL = "/upload";
+        private static final String IMAGE_UPLOAD_URL = "/photos";
         private Bitmap imageBitmap;
         private ProgressDialog progressDialog;
         private static final int RESULT_SUCCESS = 1;

@@ -14,12 +14,15 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.astuetz.PagerSlidingTabStrip;
+
+import java.lang.ref.WeakReference;
 
 import desipride.socialshaadi.R;
 
@@ -30,9 +33,10 @@ public class ShaadiActivity extends FragmentActivity {
 	private PagerSlidingTabStrip tabs;
 	private ViewPager pager;
 	private MyPagerAdapter adapter;
-    private EventsFragment eventsFragment;
-	private AboutUsFragment aboutUsFragment;
-	private NewsFeedFragment newsFeedFragment;
+	private WeakReference<AboutUsFragment> aboutUsFragmentWeakReference;
+    private WeakReference<EventsFragment> eventsFragmentWeakReference;
+	private WeakReference<NewsFeedFragment> newsFeedFragmentWeakReference;
+
 
 	private Drawable oldBackground = null;
 	private int currentColor = R.color.orange;
@@ -41,10 +45,9 @@ public class ShaadiActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.shaadi_activity);
-
-        eventsFragment = new EventsFragment();
-		aboutUsFragment = new AboutUsFragment();
-		newsFeedFragment = new NewsFeedFragment();
+        aboutUsFragmentWeakReference = new WeakReference<AboutUsFragment>(null);
+        eventsFragmentWeakReference = new WeakReference<EventsFragment>(null);
+        newsFeedFragmentWeakReference = new WeakReference<NewsFeedFragment>(null);
 		tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
 		pager = (ViewPager) findViewById(R.id.pager);
 		adapter = new MyPagerAdapter(getSupportFragmentManager());
@@ -198,17 +201,50 @@ public class ShaadiActivity extends FragmentActivity {
 			Fragment fragment = null;
 			switch(position) {
 				case 0:
-					fragment = eventsFragment;
+					fragment = getEventsFragment();
 					break;
 				case 1:
-                    fragment = aboutUsFragment;
+                    fragment = getAboutUsFragment();
 					break;
 				case 2:
-                    fragment = newsFeedFragment;
+                    fragment = getNewsFeedFragment();
 					break;
 			}
 			return fragment;
 		}
 
 	}
+
+	private AboutUsFragment getAboutUsFragment() {
+		AboutUsFragment aboutUsFragment;
+		aboutUsFragment = aboutUsFragmentWeakReference.get();
+		if(aboutUsFragment == null) {
+			aboutUsFragment = new AboutUsFragment();
+            aboutUsFragmentWeakReference = new WeakReference<AboutUsFragment>(aboutUsFragment);
+		}
+		return aboutUsFragment;
+	}
+
+    private EventsFragment getEventsFragment() {
+        EventsFragment fragment;
+        fragment = eventsFragmentWeakReference.get();
+        if(fragment == null) {
+            Log.d(TAG, "EventsFragment was null");
+            fragment = new EventsFragment();
+            eventsFragmentWeakReference = new WeakReference<EventsFragment>(fragment);
+        } else {
+            Log.d(TAG, "EventsFragment was not null");
+        }
+        return fragment;
+    }
+
+    private NewsFeedFragment getNewsFeedFragment() {
+        NewsFeedFragment fragment;
+        fragment = newsFeedFragmentWeakReference.get();
+        if(fragment == null) {
+            fragment = new NewsFeedFragment();
+            newsFeedFragmentWeakReference = new WeakReference<NewsFeedFragment>(fragment);
+        }
+        return fragment;
+    }
 }
