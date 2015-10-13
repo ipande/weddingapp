@@ -21,4 +21,7 @@
     <string name="server_prefs_file">desipride.socialshaadi.SERVER_PREFS_FILE</string>
     <string name="server_hostname">hostname</string>
     <string name="default_hostname">localhost:5000</string>
+
+    <string name="title_activity_shaadi_splash_screen">ShaadiSplashScreen</string>
+
 </resources>

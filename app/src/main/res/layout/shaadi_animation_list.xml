@@ -1,0 +1,26 @@
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="false"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+    <item
+        android:drawable="@drawable/pp1"
+        android:duration="100"/>
+    <item
+        android:drawable="@drawable/pp2"
+        android:duration="100"/>
+    <item
+        android:drawable="@drawable/pp3"
+        android:duration="100"/>
+    <item
+        android:drawable="@drawable/pp4"
+        android:duration="100"/>
+    <item
+        android:drawable="@drawable/pp5"
+        android:duration="100"/>
+    <item
+        android:drawable="@drawable/pp6"
+        android:duration="100"/>
+    <item
+        android:drawable="@drawable/pp7"
+        android:duration="100"/>
+</animation-list>

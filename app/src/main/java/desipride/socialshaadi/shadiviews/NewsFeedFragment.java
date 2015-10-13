@@ -210,6 +210,7 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
             gson = new Gson();
             this.context = context;
         }
+<<<<<<< HEAD
         private static final String HTTP_PREFIX = "http://";
         private static final String GET_NEWSFEED_URL = "/newsfeed";
         @Override

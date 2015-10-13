@@ -1,13 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.2"
+    compileSdkVersion 23
+    buildToolsVersion '23.0.1'
+    useLibrary  'org.apache.http.legacy'
 
     defaultConfig {
         applicationId "desipride.socialshaadi"
         minSdkVersion 11
-        targetSdkVersion 21
+        targetSdkVersion 11
         versionCode 1
         versionName "1.0"
     }
@@ -24,20 +25,22 @@ android {
 }
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:22.2.1'
     compile project(':slidingTabStripLib')
-    compile 'com.android.support:cardview-v7:21.0.3'
-    compile 'com.android.support:recyclerview-v7:21.0.3'
-    compile 'com.android.support:appcompat-v7:21.0.3'
+    compile 'com.android.support:cardview-v7:23.0.1'
+    compile 'com.android.support:recyclerview-v7:23.0.1'
+    compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.facebook.android:facebook-android-sdk:3.23.0'
-    compile 'com.android.support:support-v4:21.0.3'
+    compile 'com.android.support:support-v4:23.0.1'
     compile 'com.pkmmte.view:circularimageview:1.1'
     compile 'de.hdodenhof:circleimageview:2.0.0'
     compile 'se.emilsjolander:StickyScrollViewItems:1.1.0'
-    compile "org.apache.httpcomponents:httpmime:4.2.3"
+    compile 'org.apache.httpcomponents:httpmime:4.2.3'
     compile 'com.squareup.picasso:picasso:2.3.3'
     compile 'com.google.code.gson:gson:2.2.4'
 }
