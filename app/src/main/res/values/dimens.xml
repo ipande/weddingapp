@@ -7,5 +7,6 @@
     <dimen name="margin_miniscule">3dp</dimen>
     <dimen name="action_bar_height">52.0dip</dimen>
     <dimen name="action_bar_text_size">12dp</dimen>
+    <dimen name="upload_icon_size">56dp</dimen>
 
 </resources>

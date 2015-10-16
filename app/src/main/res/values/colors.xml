@@ -3,7 +3,7 @@
     <color name="blue">#33B5E5</color>
     <color name="orange">#FFF4842D</color>
     <color name="white">#FFFFFFFF</color>
-
+    <color name="transparent_grey">#CCd3d3d3</color>
     <color name="black_overlay">#66000000</color>
 
 </resources>
