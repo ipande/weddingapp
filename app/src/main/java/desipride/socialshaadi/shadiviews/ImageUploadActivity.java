@@ -6,15 +6,16 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -30,43 +31,49 @@ import org.apache.http.params.HttpParams;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 
 import desipride.socialshaadi.R;
 import desipride.socialshaadi.desipride.socialshaadi.utils.ConfigData;
+import desipride.socialshaadi.desipride.socialshaadi.utils.ImageLoader;
 
-import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.*;
+import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.CONNECTION_ERR;
+import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.CONNECTION_TIMEOUT_MS;
+import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.HTTP_PREFIX;
+import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.IMAGE_UPLOAD_URL;
+import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.RESPONSE_SUCCESS;
+import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.SAMPLE_FILE_NAME;
+import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.TASK_ABORTED;
+import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.UPLOAD_RESULT_ABORTED;
+import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.UPLOAD_RESULT_FAILURE;
+import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.UPLOAD_RESULT_SUCCESS;
 
 
-public class ImageUploadActivity extends ActionBarActivity implements View.OnClickListener{
+public class ImageUploadActivity extends ActionBarActivity implements View.OnClickListener,ViewTreeObserver.OnGlobalLayoutListener{
     private static final String TAG = ImageUploadActivity.class.getSimpleName();
     ImageView imageToUpload;
     EditText caption;
     ImageView uploadButton;
     Bitmap imageBitmap;
+    Uri imageUri;
+    RelativeLayout relativeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.image_upload_activity);
         Intent intent = getIntent();
-        Uri imageUri = (Uri)intent.getData();
+        imageUri = (Uri)intent.getData();
         Log.d(TAG,"The image uri is " + imageUri.toString());
         imageToUpload = (ImageView)findViewById(R.id.image_to_upload);
         caption = (EditText)findViewById(R.id.caption);
         uploadButton = (ImageView)findViewById(R.id.upload_image_icon);
-
         uploadButton.setOnClickListener(this);
 
-        try {
-            imageBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
-        } catch (FileNotFoundException e) {
-            Log.e(TAG,"",e);
-        }
-        if(imageBitmap != null) {
-            imageToUpload.setImageBitmap(imageBitmap);
-        }
+        relativeLayout = (RelativeLayout)findViewById(R.id.image_upload_activity_layout);
+
+        ViewTreeObserver vto = relativeLayout.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(this);
 
     }
 
@@ -78,6 +85,17 @@ public class ImageUploadActivity extends ActionBarActivity implements View.OnCli
         ImageUploadTask task = new ImageUploadTask(this,imageBitmap,captionString);
         task.execute();
     }
+
+    @Override
+    public void onGlobalLayout() {
+        relativeLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+        int width = relativeLayout.getWidth();
+        int height = relativeLayout.getHeight();
+        Log.d(TAG,"Width and height are " + width +","+ height);
+        imageBitmap = ImageLoader.loadImage(imageToUpload, imageUri,this,height,width);
+
+    }
+
 
     public class ImageUploadTask extends AsyncTask<Void, Void, Integer> {
 
