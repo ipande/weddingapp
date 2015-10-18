@@ -8,24 +8,27 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
 
 import java.security.InvalidParameterException;
 
 import desipride.socialshaadi.R;
+import desipride.socialshaadi.desipride.socialshaadi.utils.ImageLoader;
 import desipride.socialshaadi.shadidata.Event;
 import desipride.socialshaadi.shadidata.EventData;
 
-public class EventActivity extends ActionBarActivity {
+public class EventActivity extends ActionBarActivity implements ViewTreeObserver.OnGlobalLayoutListener {
 
     public static final String EVENT_INDEX = "EVNT_IDX";
+    private static final String TAG = EventActivity.class.getSimpleName();
 
     TextView dateTime;
     TextView xDaysToGo;
@@ -38,6 +41,7 @@ public class EventActivity extends ActionBarActivity {
     NavigateToEventDialog dialog;
     RelativeLayout addressInfo;
     Event event;
+    LinearLayout linearLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +67,7 @@ public class EventActivity extends ActionBarActivity {
         dateTime.setText(event.getDateTimeString());
         locationTitle.setText(event.getAddressTitle());
         locationDetails.setText(event.getAddressDetails());
-        Picasso.with(this).load(event.getCoverPage()).into(eventCoverImage);
+
         addressInfo = (RelativeLayout)findViewById(R.id.address_info);
         addressInfo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,6 +75,23 @@ public class EventActivity extends ActionBarActivity {
                 showNavigationDialog();
             }
         });
+
+        linearLayout = (LinearLayout)findViewById(R.id.event_info_activity_layout);
+
+        ViewTreeObserver vto = linearLayout.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(this);
+
+    }
+
+
+    @Override
+    public void onGlobalLayout() {
+        linearLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+        int width = linearLayout.getWidth();
+        int height = linearLayout.getHeight();
+        Log.d(TAG, "onGlobalLayout W:" + width + ", H:" + height);
+        ImageLoader.loadImage(eventCoverImage, event.getCoverPage(), getResources(), 0, width);
+
     }
 
     private void showNavigationDialog() {
@@ -78,7 +99,7 @@ public class EventActivity extends ActionBarActivity {
             dialog = NavigateToEventDialog.getNewDialog(event.getAddressUri());
         }
 
-        dialog.show(getFragmentManager(),"dialog");
+        dialog.show(getFragmentManager(), "dialog");
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -101,6 +122,7 @@ public class EventActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 
     public static class NavigateToEventDialog extends DialogFragment {
 

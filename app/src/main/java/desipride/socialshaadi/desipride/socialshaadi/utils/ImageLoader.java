@@ -1,6 +1,7 @@
 package desipride.socialshaadi.desipride.socialshaadi.utils;
 
-import android.content.Context;
+import android.content.ContentResolver;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -22,15 +23,27 @@ public class ImageLoader {
     private static final int ROTATION_90 = 90;
     private static final int ROTATION_270 = 270;
 
-    public static Bitmap loadImage(ImageView imageView, Uri imageUri, Context context,int reqHeight, int reqWidth)
-    {
+    public static void loadImage(ImageView imageView,int resourceId, Resources resources, int reqHeight, int reqWidth) {
+        Bitmap imageBitmap = null;
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(resources,resourceId,options);
+        options.inScaled = false;
+        options.inSampleSize = calculateInSampleSize(options.outHeight,options.outWidth, reqHeight, reqWidth);
+        Log.d(TAG,"Original H:" + options.outHeight +" W:" + options.outWidth + " Req H:" + reqHeight + "W:" + reqWidth + " new sample size if " + options.inSampleSize);
+        options.inJustDecodeBounds = false;
+        imageBitmap = BitmapFactory.decodeResource(resources, resourceId, options);
+        imageView.setImageBitmap(imageBitmap);
+    }
+
+    public static Bitmap loadImage(ImageView imageView, Uri imageUri, ContentResolver contentResolver,int reqHeight, int reqWidth) {
         Bitmap imageBitmap = null;
         int imageOrientation;
         InputStream imageInputStream = null;
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         try {
-            imageInputStream = context.getContentResolver().openInputStream(imageUri);
+            imageInputStream = contentResolver.openInputStream(imageUri);
             BitmapFactory.decodeStream(imageInputStream, null, options);
             imageInputStream.close();
         } catch (FileNotFoundException e) {
@@ -42,7 +55,7 @@ public class ImageLoader {
         }
 
         int rotatedWidth, rotatedHeight;
-        imageOrientation = getOrientation(context, imageUri);
+        imageOrientation = getOrientation(contentResolver, imageUri);
 
         if (imageOrientation == ROTATION_90 || imageOrientation == ROTATION_270) {
             rotatedWidth = options.outHeight;
@@ -56,7 +69,7 @@ public class ImageLoader {
 
         Log.d(TAG, "Dimentions of original image are H:" + rotatedHeight + " W:" + rotatedWidth + " insample size:" +options.inSampleSize);
         try {
-            imageInputStream = context.getContentResolver().openInputStream(imageUri);
+            imageInputStream = contentResolver.openInputStream(imageUri);
             options.inJustDecodeBounds = false;
             imageBitmap = BitmapFactory.decodeStream(imageInputStream, null, options);
             imageInputStream.close();
@@ -83,8 +96,7 @@ public class ImageLoader {
     }
 
 
-    private static int calculateInSampleSize(
-            int imageHeight, int imageWidth, int reqWidth, int reqHeight) {
+    private static int calculateInSampleSize(int imageHeight, int imageWidth, int reqHeight,  int reqWidth) {
         // Raw height and width of image
         final int height = imageHeight;
         final int width = imageWidth;
@@ -106,9 +118,9 @@ public class ImageLoader {
         return inSampleSize;
     }
 
-    public static int getOrientation(Context context, Uri photoUri) {
+    public static int getOrientation(ContentResolver contentResolver, Uri photoUri) {
     /* it's on the external media. */
-        Cursor cursor = context.getContentResolver().query(photoUri,
+        Cursor cursor = contentResolver.query(photoUri,
                 new String[] { MediaStore.Images.ImageColumns.ORIENTATION }, null, null, null);
 
         if (cursor.getCount() != 1) {
