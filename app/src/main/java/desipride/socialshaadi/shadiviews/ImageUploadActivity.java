@@ -88,11 +88,11 @@ public class ImageUploadActivity extends ActionBarActivity implements View.OnCli
 
     @Override
     public void onGlobalLayout() {
-        relativeLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+        //relativeLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
         int width = relativeLayout.getWidth();
         int height = relativeLayout.getHeight();
-        Log.d(TAG,"Width and height are " + width +","+ height);
-        imageBitmap = ImageLoader.loadImage(imageToUpload, imageUri,this,height,width);
+        Log.d(TAG,"onGlobalLayout W:" + width +", H:"+ height);
+        imageBitmap = ImageLoader.loadImage(imageToUpload, imageUri,this,0,width);
 
     }
 
