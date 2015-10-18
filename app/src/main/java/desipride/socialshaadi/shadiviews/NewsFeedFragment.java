@@ -40,13 +40,13 @@ import java.util.List;
 
 import desipride.socialshaadi.R;
 import desipride.socialshaadi.desipride.socialshaadi.utils.ConfigData;
-import desipride.socialshaadi.desipride.socialshaadi.utils.Constants;
 import desipride.socialshaadi.desipride.socialshaadi.utils.CursorRecyclerViewAdapter;
 import desipride.socialshaadi.shadidata.NewsFeedDataSource;
 import desipride.socialshaadi.shadidata.NewsFeedItem;
 
-import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.*;
 import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.CONNECTION_ERR;
+import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.CONNECTION_TIMEOUT_MS;
+import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.GET_NEWSFEED_URL;
 import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.HTTP_PREFIX;
 import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.IMAGE_UPLOAD_CANCELLED;
 import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.IMAGE_UPLOAD_FAILURE;
@@ -160,7 +160,9 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
                 break;
         }
     }
-
+    private boolean isFragmentActive() {
+        return isAdded() && !isDetached() && !isRemoving();
+    }
 
     private void refreshNewsFeed() {
         newsFeedRefreshLayout.setRefreshing(true);
@@ -273,7 +275,11 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
             if(result == SUCCESS) {
                 newsFeedCursorAdapter.changeCursor(cursor);
             } else {
-                Toast.makeText(getActivity(),NEWSFEED_NOT_REFRESHED,Toast.LENGTH_SHORT).show();
+                if(isFragmentActive()) {
+                    Log.d(TAG,"Could not refresh newsfeed toast");
+                    Toast.makeText(getActivity(),NEWSFEED_NOT_REFRESHED,Toast.LENGTH_SHORT).show();
+                }
+
             }
             newsFeedRefreshLayout.setRefreshing(false);
         }

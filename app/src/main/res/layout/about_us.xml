@@ -15,29 +15,12 @@
         android:layout_weight="1"
         android:weightSum="10"
         android:id="@+id/our_story">
-        <!--de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="wrap_content"
-            android:layout_height="0px"
-            android:src="@drawable/parth_priya"
-            app:civ_border_width="2dp"
-            app:civ_border_color="#FF000000"
-            android:layout_weight="9.5"/-->
-        <!--com.pkmmte.view.CircularImageView
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="0px"
             android:layout_margin="8dp"
-            android:src="@drawable/parth_priya"
-            app:border="true"
-            app:border_color="#EEEEEE"
-            app:border_width="4dp"
-            app:shadow="true"
-            android:gravity="center"
-            android:layout_weight="9.5"/-->
-        <desipride.socialshaadi.desipride.socialshaadi.utils.RoundedImageView
-            android:layout_width="wrap_content"
-            android:layout_height="0px"
-            android:layout_margin="8dp"
-            android:src="@drawable/parth_priya"
+            android:src="@drawable/parth_priya_circle"
+            android:id="@+id/priya_parth_about_us"
             android:gravity="center"
             android:layout_weight="9.5"/>
 
@@ -70,11 +53,12 @@
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
             android:weightSum="10">
-            <desipride.socialshaadi.desipride.socialshaadi.utils.RoundedImageView
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="0px"
                 android:layout_margin="8dp"
-                android:src="@drawable/parth_priya"
+                android:src="@drawable/parth_family_circle"
+                android:id="@+id/parth_family"
                 android:gravity="center"
                 android:layout_weight="9.5"/>
 
@@ -99,11 +83,12 @@
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
             android:weightSum="10">
-            <desipride.socialshaadi.desipride.socialshaadi.utils.RoundedImageView
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="0px"
                 android:layout_margin="8dp"
-                android:src="@drawable/parth_priya"
+                android:id="@+id/priya_family"
+                android:src="@drawable/priya_family_circle"
                 android:gravity="center"
                 android:layout_weight="9.5"/>
 
