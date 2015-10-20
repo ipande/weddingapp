@@ -44,6 +44,7 @@ import desipride.socialshaadi.desipride.socialshaadi.utils.CursorRecyclerViewAda
 import desipride.socialshaadi.shadidata.NewsFeedDataSource;
 import desipride.socialshaadi.shadidata.NewsFeedItem;
 
+import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.APP_TAG;
 import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.CONNECTION_ERR;
 import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.CONNECTION_TIMEOUT_MS;
 import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.GET_NEWSFEED_URL;
@@ -65,6 +66,7 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
     ImageView uploadPictureButton;
     NewsFeedCursorAdapter newsFeedCursorAdapter;
     SwipeRefreshLayout newsFeedRefreshLayout;
+    private RecyclerView recyclerNewsFeedView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -81,7 +83,7 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
         uploadPictureButton.setOnLongClickListener(this);
         newsFeedRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.newsfeed_swipe_refresh_layout);
 
-        RecyclerView recyclerNewsFeedView = (RecyclerView) view.findViewById(R.id.newsfeed);
+        recyclerNewsFeedView = (RecyclerView) view.findViewById(R.id.newsfeed);
         recyclerNewsFeedView.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -286,18 +288,31 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
 
     }
 
-    private static class NewsFeedViewHolder extends RecyclerView.ViewHolder {
+    private static class NewsFeedViewHolder extends RecyclerView.ViewHolder{
         protected TextView caption;
         protected ImageView image;
+        protected View view;
+
+        public String getImageURI() {
+            return imageURI;
+        }
+
+        public void setImageURI(String imageURI) {
+            this.imageURI = imageURI;
+        }
+
+        protected String imageURI;
 
         public NewsFeedViewHolder(View v) {
             super(v);
             caption = (TextView)v.findViewById(R.id.caption);
             image = (ImageView)v.findViewById(R.id.newsfeed_image);
+            view = v;
         }
+
     }
 
-    private static class NewsFeedCursorAdapter extends CursorRecyclerViewAdapter<NewsFeedViewHolder> {
+    private class NewsFeedCursorAdapter extends CursorRecyclerViewAdapter<NewsFeedViewHolder> {
 
         Context context;
 
@@ -308,11 +323,24 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
 
         @Override
         public void onBindViewHolder(NewsFeedViewHolder newsFeedViewHolder, Cursor cursor) {
-            NewsFeedItem newsFeedItem = NewsFeedDataSource.cursorToNewsFeedItem(cursor);
+            final NewsFeedItem newsFeedItem = NewsFeedDataSource.cursorToNewsFeedItem(cursor);
             newsFeedViewHolder.caption.setText(newsFeedItem.getCaption());
             Picasso.with(context)
                     .load(newsFeedItem.getUrl())
                     .into(newsFeedViewHolder.image);
+
+            newsFeedViewHolder.view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int itemPosition = recyclerNewsFeedView.getChildPosition(v);
+                    Log.d(APP_TAG, "Pos: " + itemPosition + "URL: "+newsFeedItem.getUrl());
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_VIEW);
+                    intent.setDataAndType(Uri.parse(newsFeedItem.getUrl()),"image/*");
+                    startActivity(intent);
+                }
+            });
+
 
         }
 
@@ -326,7 +354,7 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
         }
     }
 
-    private static class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedViewHolder> {
+    private class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedViewHolder> {
 
         private List<NewsFeedItem> newsFeedItems;
         private Context context;
@@ -350,6 +378,8 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
             return new NewsFeedViewHolder(itemView);
         }
 
+
+
         @Override
         public void onBindViewHolder(NewsFeedViewHolder newsFeedViewHolder, int i) {
             NewsFeedItem newsFeedItem = newsFeedItems.get(i);
@@ -357,13 +387,13 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
             Picasso.with(context)
                     .load(newsFeedItem.getUrl())
                     .into(newsFeedViewHolder.image);
-
         }
 
         @Override
         public int getItemCount() {
             return newsFeedItems.size();
         }
+
     }
 
 }
