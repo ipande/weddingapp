@@ -9,7 +9,7 @@ public class Constants {
     public static final String DATE_FORMAT = "EEE, d MMM yyyy, hh:mm a";
     public static final String TIME_FORMAT = "to hh:mm a";
     public static final String MM_DD_YY = "MM/dd/yyyy hh:mm a";
-
+    public static final String APP_TAG = "com.desipride.socialshaadi.";
     public static final int SELECT_FILE = 1;
     public static final int UPLOAD_IMAGE = 2;
     public static final int CONNECTION_ERR = 35;

@@ -5,19 +5,18 @@ import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
 
 import desipride.socialshaadi.R;
+import desipride.socialshaadi.desipride.socialshaadi.utils.Constants;
 
 
-public class ShaadiSplashScreen extends Activity {
+public class ShaadiSplashScreen extends Activity{
     // Splash screen timer
     private static int SPLASH_TIME_OUT = 6400;
-    /**
-     * The thread to process splash screen events
-     */
-    private Thread mSplashThread;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,13 +24,26 @@ public class ShaadiSplashScreen extends Activity {
 
         setContentView(R.layout.activity_shaadi_splash_screen);
 
-        ImageView gyroView = (ImageView) findViewById(R.id.shaadiAnime);
+        ImageView imagesView = (ImageView) findViewById(R.id.shaadiAnime);
 
-        gyroView.setBackgroundResource(R.drawable.shaadi_animation_list);
+        imagesView.setBackgroundResource(R.drawable.shaadi_animation_list);
 
-        final AnimationDrawable gyroAnimation = (AnimationDrawable) gyroView.getBackground();
+        imagesView.setOnClickListener(new View.OnClickListener(){
 
-        gyroAnimation.start();
+            @Override
+            public void onClick(View v) {
+                Log.d(Constants.APP_TAG,"Animation was clicked, proceed to main activity");
+                if(v!=null) {
+                    Intent i = new Intent(ShaadiSplashScreen.this, ShaadiActivity.class);
+                    startActivity(i);
+                    finish();
+                }
+            }
+        });
+
+        final AnimationDrawable splashAnimation = (AnimationDrawable) imagesView.getBackground();
+
+        splashAnimation.start();
 
         new Handler().postDelayed(new Runnable() {
 
@@ -51,5 +63,4 @@ public class ShaadiSplashScreen extends Activity {
         }, SPLASH_TIME_OUT);
 
     }
-
 }
