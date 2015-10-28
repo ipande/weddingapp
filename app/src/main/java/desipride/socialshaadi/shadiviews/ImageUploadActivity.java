@@ -168,7 +168,7 @@ public class ImageUploadActivity extends ActionBarActivity implements View.OnCli
         private int uploadImage() {
             try {
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 75, bos);
+                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 50, bos);
                 byte[] data = bos.toByteArray();
 
                 postRequest = new HttpPost(HTTP_PREFIX+ ConfigData.getServerHostname(context)+IMAGE_UPLOAD_URL);
@@ -190,6 +190,7 @@ public class ImageUploadActivity extends ActionBarActivity implements View.OnCli
                     s = s.append(sResponse);
                 }
                 String responseData = s.toString();
+                Log.d(TAG,"Response from server is " + responseData);
                 if(responseData.equals(RESPONSE_SUCCESS)) {
                     return UPLOAD_RESULT_SUCCESS;
                 } else {

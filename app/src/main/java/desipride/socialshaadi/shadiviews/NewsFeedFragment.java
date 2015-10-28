@@ -56,6 +56,7 @@ import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.NEWS
 import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.SELECT_FILE;
 import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.TASK_ABORTED;
 import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.UPLOAD_IMAGE;
+import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.NEWSFEED_IMAGE_HEIGHT;
 
 /**
  * Created by parth.mehta on 10/4/15.
@@ -101,6 +102,7 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
                 refreshNewsFeed();
             }
         });
+        Picasso.with(getActivity()).setIndicatorsEnabled(true);
         return view;
     }
 
@@ -259,7 +261,14 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
                 return ERROR;
             }
 
-            NewsFeedItem items[] = gson.fromJson(responseData, NewsFeedItem[].class);
+            NewsFeedItem items[];
+            try {
+                items = gson.fromJson(responseData, NewsFeedItem[].class);
+            } catch(com.google.gson.JsonSyntaxException e) {
+                Log.e(TAG,"Invalid Response" ,e);
+                return ERROR;
+            }
+
 
             for(NewsFeedItem item : items) {
                 Log.d(TAG,"Adding Item to database: " + item);
@@ -324,9 +333,10 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
         @Override
         public void onBindViewHolder(NewsFeedViewHolder newsFeedViewHolder, Cursor cursor) {
             final NewsFeedItem newsFeedItem = NewsFeedDataSource.cursorToNewsFeedItem(cursor);
+            Log.d(TAG,"onCreateViewHolder id:" + newsFeedItem.getId());
             newsFeedViewHolder.caption.setText(newsFeedItem.getCaption());
             Picasso.with(context)
-                    .load(newsFeedItem.getUrl())
+                    .load(newsFeedItem.getUrl()).resize(0,NEWSFEED_IMAGE_HEIGHT).placeholder(R.drawable.default_image)
                     .into(newsFeedViewHolder.image);
 
             newsFeedViewHolder.view.setOnClickListener(new View.OnClickListener() {
@@ -371,6 +381,7 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
 
         @Override
         public NewsFeedViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+            Log.d(TAG,"onCreateViewHolder i:" + i);
             View itemView = LayoutInflater.
                     from(viewGroup.getContext()).
                     inflate(R.layout.news_feed_card, viewGroup, false);
@@ -382,6 +393,7 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
 
         @Override
         public void onBindViewHolder(NewsFeedViewHolder newsFeedViewHolder, int i) {
+            Log.d(TAG,"onBindViewHolder i:" + i);
             NewsFeedItem newsFeedItem = newsFeedItems.get(i);
             newsFeedViewHolder.caption.setText(newsFeedItem.getCaption());
             Picasso.with(context)

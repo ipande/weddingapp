@@ -33,7 +33,7 @@
             android:label="ShaadiPage"
             android:theme="@style/AppTheme" >
             <intent-filter>
-                <!--action android:name="android.intent.action.MAIN" /-->
+                <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
@@ -71,7 +71,7 @@
             android:label="@string/title_activity_shaadi_splash_screen"
             android:theme="@style/AppTheme" >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <!--action android:name="android.intent.action.MAIN" /-->
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>

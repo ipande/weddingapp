@@ -20,17 +20,16 @@
             android:layout_height="wrap_content"
             android:id="@+id/event_thumbnail"
             android:layout_weight="0.16"
-            android:scaleType="fitXY"
             android:adjustViewBounds="true"
             android:src="@drawable/parth_priya"
-            android:layout_alignParentLeft="true"
-            android:layout_alignBottom="@+id/event_location" />
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Event Title"
+            android:text="Event Title if it is too long hahah"
             android:id="@+id/event_title"
             android:layout_toRightOf="@+id/event_thumbnail"
             android:layout_marginLeft="@dimen/margin_miniscule"

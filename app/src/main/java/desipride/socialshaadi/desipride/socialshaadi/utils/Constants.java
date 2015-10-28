@@ -34,6 +34,8 @@ public class Constants {
 
     public static final String RESPONSE_SUCCESS = "{image_uploaded}";
 
+    public static final int NEWSFEED_IMAGE_HEIGHT = 800;
+
 
 
 
