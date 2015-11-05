@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Event Date and Time"
-            android:id="@+id/event_date_time"
+            android:id="@+id/family_member_relation"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/event_time_image"
             android:layout_toEndOf="@+id/event_time_image" />
@@ -42,7 +42,7 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="x days to go"
             android:id="@+id/event_x_days_togo"
-            android:layout_below="@+id/event_date_time"
+            android:layout_below="@+id/family_member_relation"
             android:layout_toRightOf="@+id/event_time_image"
             android:layout_toEndOf="@+id/event_time_image" />
 

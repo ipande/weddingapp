@@ -200,8 +200,10 @@ public class ImageUploadActivity extends ActionBarActivity implements View.OnCli
 
                 Log.e(e.getClass().getName(), e.getMessage());
                 if(requestAborted) {
+                    Log.d(TAG,"Image Upload Aborted");
                     return UPLOAD_RESULT_ABORTED;
                 } else {
+                    Log.d(TAG,"Image Upload Failure");
                     return UPLOAD_RESULT_FAILURE;
                 }
 

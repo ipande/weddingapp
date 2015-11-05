@@ -3,33 +3,24 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent">
     <item
-        android:drawable="@drawable/pap1"
-        android:duration="200"/>
+        android:drawable="@drawable/animation1"
+        android:duration="500"/>
     <item
-        android:drawable="@drawable/pap2"
-        android:duration="200"/>
+        android:drawable="@drawable/animation2"
+        android:duration="500"/>
     <item
-        android:drawable="@drawable/pap3"
-        android:duration="200"/>
+        android:drawable="@drawable/animation3"
+        android:duration="500"/>
     <item
-        android:drawable="@drawable/pap4"
-        android:duration="200"/>
-    <item
-        android:drawable="@drawable/pap5"
-        android:duration="200"/>
+        android:drawable="@drawable/animation5"
+        android:duration="500"/>
 
     <item
-        android:drawable="@drawable/pap6"
-        android:duration="200"/>
+        android:drawable="@drawable/animation6"
+        android:duration="500"/>
 
     <item
-        android:drawable="@drawable/pap7"
-        android:duration="200"/>
-
-    <item
-        android:drawable="@drawable/pap8"
-        android:duration="200"/>
-
-
+        android:drawable="@drawable/animation7"
+        android:duration="500"/>
 
 </animation-list>

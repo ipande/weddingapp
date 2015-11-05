@@ -31,7 +31,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/imageView5"
         android:adjustViewBounds="true"
-        android:src="@drawable/parth_priya"
         android:layout_marginTop="@dimen/margin_tiny"
         android:layout_marginLeft="@dimen/margin_tiny"
         android:layout_marginRight="@dimen/margin_tiny" />

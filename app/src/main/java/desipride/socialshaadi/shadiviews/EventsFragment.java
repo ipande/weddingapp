@@ -16,16 +16,22 @@
 
 package desipride.socialshaadi.shadiviews;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -34,11 +40,10 @@ import desipride.socialshaadi.desipride.socialshaadi.utils.RecyclerItemClickList
 import desipride.socialshaadi.shadidata.Event;
 import desipride.socialshaadi.shadidata.EventData;
 
-public class EventsFragment extends Fragment {
+public class EventsFragment extends Fragment implements ViewTreeObserver.OnGlobalLayoutListener {
 
-	private static final String ARG_POSITION = "position";
-
-    private static class EventViewHolder extends RecyclerView.ViewHolder {
+    private static final String TAG = EventsFragment.class.getSimpleName();
+    private class EventViewHolder extends RecyclerView.ViewHolder {
         protected TextView title;
         protected TextView dateTime;
         protected TextView location;
@@ -46,18 +51,20 @@ public class EventsFragment extends Fragment {
 
         public EventViewHolder(View v) {
             super(v);
-            title =  (TextView) v.findViewById(R.id.event_title);
-            dateTime = (TextView)  v.findViewById(R.id.event_date_time);
-            location = (TextView)  v.findViewById(R.id.event_location);
-            eventThumbnail = (ImageView) v.findViewById(R.id.event_thumbnail);
+            title =  (TextView) v.findViewById(R.id.family_member_name);
+            dateTime = (TextView)  v.findViewById(R.id.family_member_relation);
+            location = (TextView)  v.findViewById(R.id.family_member_info);
+            eventThumbnail = (ImageView) v.findViewById(R.id.family_member_image);
+
         }
     }
 
-    private static class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
+    private class EventAdapter extends RecyclerView.Adapter<EventViewHolder> {
 
         private ArrayList<Event> events;
-
-        public EventAdapter(ArrayList<Event> events) {
+        private Context context;
+        public EventAdapter(ArrayList<Event> events, Context context) {
+            this.context = context;
             this.events = events;
         }
 
@@ -77,7 +84,13 @@ public class EventsFragment extends Fragment {
             String date_time = event.getEventDateString();
             eventViewHolder.dateTime.setText(date_time);
             eventViewHolder.location.setText(event.getAddressTitle());
-            eventViewHolder.eventThumbnail.setImageResource(event.getThumbnail());
+            if(relativeLayoutWidth != 0) {
+                Picasso.with(context)
+                        .load(event.getThumbnail()).resize(relativeLayoutWidth/4,0).into(eventViewHolder.eventThumbnail);
+            } else {
+                Picasso.with(context)
+                        .load(event.getThumbnail()).resize(200,200).into(eventViewHolder.eventThumbnail);
+            }
         }
 
         @Override
@@ -85,6 +98,7 @@ public class EventsFragment extends Fragment {
             return events.size();
         }
     }
+    private int relativeLayoutWidth;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -92,30 +106,49 @@ public class EventsFragment extends Fragment {
 
 	}
 
+    private RecyclerView recyclerEventView;
+    private RelativeLayout parentRelativeLayout;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.event_list, container, false);
 
-        RecyclerView recyclerEventView = (RecyclerView) view.findViewById(R.id.eventlist);
+        parentRelativeLayout = (RelativeLayout)view.findViewById(R.id.events_container);
+        ViewTreeObserver vto = parentRelativeLayout.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener(this);
+
+        recyclerEventView = (RecyclerView) view.findViewById(R.id.eventlist);
         recyclerEventView.setHasFixedSize(true);
+
+
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerEventView.setLayoutManager(llm);
 
         ArrayList<Event> eventList = EventData.getEvents();
-        EventAdapter eventAdapter = new EventAdapter(eventList);
+        EventAdapter eventAdapter = new EventAdapter(eventList,getActivity());
         recyclerEventView.setAdapter(eventAdapter);
         recyclerEventView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        Intent i = new Intent(getActivity(),EventActivity.class);
-                        i.putExtra(EventActivity.EVENT_INDEX,position);
+                        Intent i = new Intent(getActivity(), EventActivity.class);
+                        i.putExtra(EventActivity.EVENT_INDEX, position);
                         startActivity(i);
                     }
                 })
         );
+
+
         return view;
 	}
+
+    @Override
+    public void onGlobalLayout() {
+        parentRelativeLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+        relativeLayoutWidth = parentRelativeLayout.getWidth();
+        int height = parentRelativeLayout.getHeight();
+        Log.d(TAG, "onGlobalLayout W:" + relativeLayoutWidth + ", H:" + height);
+    }
 
 }

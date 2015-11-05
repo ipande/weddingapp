@@ -24,7 +24,7 @@ public class Constants {
 
     public static final int CONNECTION_TIMEOUT_MS = 5000;
 
-
+    public static final String DEFAULT_HOSTNAME = "52.27.112.216:9000";
     public static final String SAMPLE_FILE_NAME = "sample.jpg";
     public static final String IMAGE_UPLOAD_URL = "/photos";
 
@@ -36,6 +36,10 @@ public class Constants {
 
     public static final int NEWSFEED_IMAGE_HEIGHT = 800;
 
+    public static final String FAMILY_IDENTIFIER = "FAMILY";
+    public static final int PARTH_FAMILY_CODE = 1;
+    public static final int PRIYA_FAMILY_CODE = 2;
+    public static final int INVALID_FAMILY_CODE = 0;
 
 
 

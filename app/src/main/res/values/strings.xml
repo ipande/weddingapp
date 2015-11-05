@@ -22,6 +22,9 @@
     <string name="server_hostname">hostname</string>
     <string name="default_hostname">localhost:5000</string>
 
-    <string name="title_activity_shaadi_splash_screen">ShaadiSplashScreen</string>
+    <string name="title_app_name">Parth Priya Wedding</string>
+    <string name="title_activity_family_info_activity">Family</string>
+    <string name="priya_family">Priya\'s Family</string>
+    <string name="parth_family">Parth\'s Family</string>
 
 </resources>

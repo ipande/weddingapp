@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="10"
+    android:id="@+id/splashscreen_layout">
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_weight="4"
+        android:src="@drawable/parth_and_priyas_wedding"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/splash_screen_margin" />
     <ImageView
         android:id="@+id/shaadiAnime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:adjustViewBounds="true"
         android:clickable="true"
-         />
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/fab_margin" />
 </LinearLayout>

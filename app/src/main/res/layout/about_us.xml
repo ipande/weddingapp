@@ -19,7 +19,6 @@
             android:layout_width="wrap_content"
             android:layout_height="0px"
             android:layout_margin="8dp"
-            android:src="@drawable/parth_priya_circle"
             android:id="@+id/priya_parth_about_us"
             android:gravity="center"
             android:layout_weight="9.5"/>
@@ -52,12 +51,12 @@
             android:orientation="vertical"
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
-            android:weightSum="10">
+            android:weightSum="10"
+            android:id="@+id/parth_family_view">
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="0px"
                 android:layout_margin="8dp"
-                android:src="@drawable/parth_family_circle"
                 android:id="@+id/parth_family"
                 android:gravity="center"
                 android:layout_weight="9.5"/>
@@ -82,13 +81,13 @@
             android:orientation="vertical"
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
-            android:weightSum="10">
+            android:weightSum="10"
+            android:id="@+id/priya_family_view">
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="0px"
                 android:layout_margin="8dp"
                 android:id="@+id/priya_family"
-                android:src="@drawable/priya_family_circle"
                 android:gravity="center"
                 android:layout_weight="9.5"/>
 

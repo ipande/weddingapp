@@ -21,6 +21,7 @@ import android.widget.TextView;
 import java.security.InvalidParameterException;
 
 import desipride.socialshaadi.R;
+import desipride.socialshaadi.desipride.socialshaadi.utils.DateUtil;
 import desipride.socialshaadi.desipride.socialshaadi.utils.ImageLoader;
 import desipride.socialshaadi.shadidata.Event;
 import desipride.socialshaadi.shadidata.EventData;
@@ -47,7 +48,7 @@ public class EventActivity extends ActionBarActivity implements ViewTreeObserver
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_info);
 
-        dateTime = (TextView)findViewById(R.id.event_date_time);
+        dateTime = (TextView)findViewById(R.id.family_member_relation);
         xDaysToGo = (TextView)findViewById(R.id.event_x_days_togo);
         locationTitle = (TextView)findViewById(R.id.event_location_title);
         locationDetails = (TextView)findViewById(R.id.event_location_detail);
@@ -78,6 +79,9 @@ public class EventActivity extends ActionBarActivity implements ViewTreeObserver
 
         linearLayout = (LinearLayout)findViewById(R.id.event_info_activity_layout);
 
+
+        int daysTogo = DateUtil.getTimeRemaining(event.getStartTime());
+        xDaysToGo.setText(daysTogo + " days to go");
         ViewTreeObserver vto = linearLayout.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(this);
 

@@ -30,6 +30,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Caption"
             android:id="@+id/caption"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/margin_tiny"
             />
 
