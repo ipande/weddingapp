@@ -51,10 +51,10 @@ public class EventsFragment extends Fragment implements ViewTreeObserver.OnGloba
 
         public EventViewHolder(View v) {
             super(v);
-            title =  (TextView) v.findViewById(R.id.family_member_name);
-            dateTime = (TextView)  v.findViewById(R.id.family_member_relation);
-            location = (TextView)  v.findViewById(R.id.family_member_info);
-            eventThumbnail = (ImageView) v.findViewById(R.id.family_member_image);
+            title =  (TextView) v.findViewById(R.id.event_title);
+            dateTime = (TextView)  v.findViewById(R.id.event_date_time);
+            location = (TextView)  v.findViewById(R.id.event_location);
+            eventThumbnail = (ImageView) v.findViewById(R.id.event_thumbnail);
 
         }
     }
@@ -84,13 +84,9 @@ public class EventsFragment extends Fragment implements ViewTreeObserver.OnGloba
             String date_time = event.getEventDateString();
             eventViewHolder.dateTime.setText(date_time);
             eventViewHolder.location.setText(event.getAddressTitle());
-            if(relativeLayoutWidth != 0) {
+            Log.d(TAG, "Loading event image in image view");
                 Picasso.with(context)
-                        .load(event.getThumbnail()).resize(relativeLayoutWidth/4,0).into(eventViewHolder.eventThumbnail);
-            } else {
-                Picasso.with(context)
-                        .load(event.getThumbnail()).resize(200,200).into(eventViewHolder.eventThumbnail);
-            }
+                        .load(event.getThumbnail()).into(eventViewHolder.eventThumbnail);
         }
 
         @Override

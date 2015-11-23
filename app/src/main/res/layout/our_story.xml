@@ -2,50 +2,81 @@
 
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
     android:background="@color/white"
     android:weightSum="1">
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:text="Jab we met"
-        android:id="@+id/story_item_title"
-        android:layout_gravity="center_horizontal"
-        android:gravity="left|center"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_marginLeft="@dimen/margin_tiny"
-        android:layout_marginRight="@dimen/margin_tiny"
-        android:background="@color/white"
-        android:tag="sticky"/>
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView5"
-        android:adjustViewBounds="true"
-        android:layout_marginTop="@dimen/margin_tiny"
-        android:layout_marginLeft="@dimen/margin_tiny"
-        android:layout_marginRight="@dimen/margin_tiny" />
-
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Naaching on her isharas since 2006..."
-        android:id="@+id/textView4"
-        android:layout_gravity="center_horizontal"
-        android:gravity="left|center"
-        android:layout_marginTop="@dimen/margin_tiny"
-        android:layout_marginLeft="@dimen/margin_tiny"
-        android:layout_marginRight="@dimen/margin_tiny"
-        android:layout_marginBottom="@dimen/margin_tiny"/>
-</LinearLayout>
+        android:orientation="vertical">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/our_story_parth_1"
+            android:id="@+id/story_1"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_marginLeft="@dimen/margin_tiny"
+            android:layout_marginRight="@dimen/margin_tiny"
+            android:background="@color/white"
+            android:tag="sticky" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/love_story_toddlers"
+            android:layout_gravity="center_horizontal"
+            android:adjustViewBounds="true"
+            android:layout_margin="@dimen/margin_tiny"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/our_story_parth_2"
+            android:id="@+id/story_2"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_marginLeft="@dimen/margin_tiny"
+            android:layout_marginRight="@dimen/margin_tiny"
+            android:background="@color/white"
+            android:tag="sticky"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/love_story_old"
+            android:layout_gravity="center_horizontal"
+            android:adjustViewBounds="true"
+            android:layout_margin="@dimen/margin_tiny"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/our_story_priya_1"
+            android:id="@+id/story_3"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_marginLeft="@dimen/margin_tiny"
+            android:layout_marginRight="@dimen/margin_tiny"
+            android:background="@color/white"
+            android:tag="sticky"
+            android:textAlignment="gravity"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/love_story_new"
+            android:layout_gravity="center_horizontal"
+            android:adjustViewBounds="true"
+            android:layout_margin="@dimen/margin_tiny"/>
+
+    </LinearLayout>
+
 </ScrollView>

@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="information"
-            android:id="@+id/family_member_info"
+            android:id="@+id/family_menber_info"
             android:layout_below="@+id/family_member_relation"
             android:layout_toRightOf="@+id/family_member_image"
             android:layout_marginLeft="@dimen/margin_miniscule"

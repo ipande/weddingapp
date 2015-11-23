@@ -19,8 +19,10 @@ public class Event {
     private Uri addressUri;
     private int thumbnail;
     private int coverPage;
+    private String food;
+    private String eventDetails;
 
-    public Event(String title,Date startTime,Date endTime,String addressTitle, String addressDetails, Uri addressUri, int thumbnail,int coverPage){
+    public Event(String title,Date startTime,Date endTime,String addressTitle, String addressDetails, Uri addressUri, int thumbnail,int coverPage, String food, String eventDetails){
         this.title = title;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -29,6 +31,8 @@ public class Event {
         this.addressUri = addressUri;
         this.thumbnail = thumbnail;
         this.coverPage = coverPage;
+        this.food = food;
+        this.eventDetails = eventDetails;
     }
 
     public String getTitle() {
@@ -96,6 +100,21 @@ public class Event {
         this.thumbnail = thumbnail;
     }
 
+    public String getFood() {
+        return food;
+    }
+
+    public void setFood(String food) {
+        this.food = food;
+    }
+
+    public String getEventDetails() {
+        return eventDetails;
+    }
+
+    public void setEventDetails(String eventDetails) {
+        this.eventDetails = eventDetails;
+    }
 
     public String getDateTimeString() {
         if(startTime == null)

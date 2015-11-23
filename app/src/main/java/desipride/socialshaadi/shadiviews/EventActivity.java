@@ -36,24 +36,24 @@ public class EventActivity extends ActionBarActivity implements ViewTreeObserver
     TextView locationTitle;
     TextView locationDetails;
     TextView menuTitle;
-    TextView menuDetails;
+
     TextView eventInviteText;
     ImageView eventCoverImage;
     NavigateToEventDialog dialog;
     RelativeLayout addressInfo;
     Event event;
     LinearLayout linearLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_info);
 
-        dateTime = (TextView)findViewById(R.id.family_member_relation);
+        dateTime = (TextView)findViewById(R.id.event_data_time);
         xDaysToGo = (TextView)findViewById(R.id.event_x_days_togo);
         locationTitle = (TextView)findViewById(R.id.event_location_title);
         locationDetails = (TextView)findViewById(R.id.event_location_detail);
         menuTitle = (TextView)findViewById(R.id.event_menu);
-        menuDetails = (TextView)findViewById(R.id.event_menu_detail);
         eventInviteText = (TextView)findViewById(R.id.event_invite_details);
         eventCoverImage = (ImageView)findViewById(R.id.event_cover);
 
@@ -79,7 +79,8 @@ public class EventActivity extends ActionBarActivity implements ViewTreeObserver
 
         linearLayout = (LinearLayout)findViewById(R.id.event_info_activity_layout);
 
-
+        eventInviteText.setText(event.getEventDetails());
+        menuTitle.setText(event.getFood());
         int daysTogo = DateUtil.getTimeRemaining(event.getStartTime());
         xDaysToGo.setText(daysTogo + " days to go");
         ViewTreeObserver vto = linearLayout.getViewTreeObserver();

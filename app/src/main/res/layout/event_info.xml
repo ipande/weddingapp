@@ -1,9 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="1"
-    android:id="@+id/event_info_activity_layout">
+    android:weightSum="1">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="1"
+        android:id="@+id/event_info_activity_layout">
+
 
 
     <ImageView
@@ -31,7 +38,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Event Date and Time"
-            android:id="@+id/family_member_relation"
+            android:id="@+id/event_data_time"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/event_time_image"
             android:layout_toEndOf="@+id/event_time_image" />
@@ -42,7 +49,7 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="x days to go"
             android:id="@+id/event_x_days_togo"
-            android:layout_below="@+id/family_member_relation"
+            android:layout_below="@+id/event_data_time"
             android:layout_toRightOf="@+id/event_time_image"
             android:layout_toEndOf="@+id/event_time_image" />
 
@@ -101,20 +108,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Menu Cusine"
+            android:text=""
             android:id="@+id/event_menu"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/event_menu_icon"
-            android:layout_toEndOf="@+id/event_menu_icon" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Detailed description of mouth watering dishes"
-            android:id="@+id/event_menu_detail"
-            android:layout_below="@+id/event_menu"
-            android:layout_toRightOf="@+id/event_menu_icon"
-            android:layout_toEndOf="@+id/event_menu_icon" />
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/event_menu_icon" />
 
 
     </RelativeLayout>
@@ -124,6 +121,8 @@
         android:layout_height="match_parent"
         android:text="Event Invite Text"
         android:id="@+id/event_invite_details"
-        android:layout_gravity="center_horizontal" />
-
-</LinearLayout>
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/margin_tiny"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    </LinearLayout>
+</ScrollView>

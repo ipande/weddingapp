@@ -69,7 +69,7 @@ public class FamilyInfoActivity extends AppCompatActivity {
             super(v);
             name =  (TextView) v.findViewById(R.id.family_member_name);
             relation = (TextView)  v.findViewById(R.id.family_member_relation);
-            info = (TextView)  v.findViewById(R.id.family_member_info);
+            info = (TextView)  v.findViewById(R.id.family_menber_info);
             familyMemberImage = (ImageView) v.findViewById(R.id.family_member_image);
         }
     }

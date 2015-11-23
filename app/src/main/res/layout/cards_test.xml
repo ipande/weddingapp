@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="Event Title"
-                android:id="@+id/family_member_name"
+                android:id="@+id/event_title"
                 android:layout_toRightOf="@+id/family_member_image"
                 android:layout_weight="0.16" />
 
@@ -34,15 +34,15 @@
                 android:layout_weight="0.16"
                 android:src="@drawable/parth_priya"
                 android:layout_alignParentLeft="true"
-                android:layout_alignBottom="@+id/family_member_info" />
+                android:layout_alignBottom="@+id/event_location" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Event Date and time"
-                android:id="@+id/family_member_relation"
-                android:layout_below="@+id/family_member_name"
+                android:id="@+id/event_data_time"
+                android:layout_below="@+id/event_title"
                 android:layout_toRightOf="@+id/family_member_image"
                 android:layout_toEndOf="@+id/family_member_image" />
 
@@ -51,8 +51,8 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Event location"
-                android:id="@+id/family_member_info"
-                android:layout_below="@+id/family_member_relation"
+                android:id="@+id/event_location"
+                android:layout_below="@+id/event_data_time"
                 android:layout_toRightOf="@+id/family_member_image"
                 android:layout_toEndOf="@+id/family_member_image" />
 
