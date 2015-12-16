@@ -121,7 +121,7 @@ public class EventsFragment extends Fragment implements ViewTreeObserver.OnGloba
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerEventView.setLayoutManager(llm);
 
-        ArrayList<Event> eventList = EventData.getEvents();
+        ArrayList<Event> eventList = EventData.getEvents(getActivity());
         EventAdapter eventAdapter = new EventAdapter(eventList,getActivity());
         recyclerEventView.setAdapter(eventAdapter);
         recyclerEventView.addOnItemTouchListener(

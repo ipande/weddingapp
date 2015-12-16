@@ -18,7 +18,7 @@ public class NewsFeedMockData {
     public static List<NewsFeedItem> getNewsFeedItems() {
         List<NewsFeedItem> list = new ArrayList<NewsFeedItem>();
         for(int i=0; i< urls.length;i++) {
-            list.add(new NewsFeedItem(i,urls[i],captions[i], NewsFeedItem.NewsFeedItemType.IMAGE));
+            list.add(new NewsFeedItem(i,urls[i],captions[i],""));
         }
         return list;
     }

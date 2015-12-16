@@ -29,7 +29,8 @@
             android:layout_gravity="bottom"
             android:id="@+id/caption"
             android:hint="Add a caption"
-            android:layout_weight="8"/>
+            android:layout_weight="8"
+            android:maxLength="250"/>
 
         <ImageView
             android:layout_width="0px"

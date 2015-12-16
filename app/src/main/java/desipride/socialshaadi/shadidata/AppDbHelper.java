@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class AppDbHelper extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 7;
+    public static final int DATABASE_VERSION = 9;
     public static final String DATABASE_NAME = "NewsFeed.db";
 
     private static final String TEXT_TYPE = " TEXT";
@@ -19,7 +19,7 @@ public class AppDbHelper extends SQLiteOpenHelper {
                     DbContract.NewsFeedTable._ID + " INTEGER PRIMARY KEY," +
                     DbContract.NewsFeedTable.COLUMN_NAME_URL + TEXT_TYPE + COMMA_SEP +
                     DbContract.NewsFeedTable.COLUMN_NAME_CAPTION + TEXT_TYPE + COMMA_SEP +
-                    DbContract.NewsFeedTable.COLUMN_NAME_MEDIATYPE + INTEGER_TYPE +
+                    DbContract.NewsFeedTable.COLUMN_NAME_MEDIATYPE + TEXT_TYPE +
             " )";
 
     private static final String SQL_DELETE_ENTRIES =

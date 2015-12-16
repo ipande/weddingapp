@@ -1,5 +1,6 @@
 package desipride.socialshaadi.shadidata;
 
+import android.content.Context;
 import android.net.Uri;
 
 import java.text.ParseException;
@@ -9,6 +10,7 @@ import java.util.Date;
 
 import desipride.socialshaadi.R;
 import desipride.socialshaadi.desipride.socialshaadi.utils.Constants;
+import desipride.socialshaadi.desipride.socialshaadi.utils.InviteCode;
 
 /**
  * Created by parth.mehta on 9/15/15.
@@ -21,8 +23,9 @@ public class EventData {
     private static final int EVENT_THUMBNAIL_BETHAK = R.drawable.bethak_thumb;
     private static final int EVENT_COVER_BETHAK = R.drawable.bethak;
     private static final String EVENT_FOOD_BETHAK = "Street food";
-    private static final String EVENT_DETAIL_BETHAK = "Usher in the new year with dance music food and friends. " +
+    private static final String EVENT_DETAIL_BETHAK = "Usher in the new year with dance, music, food and friends. " +
             "Join us in welcoming the new year and the beginning of the wedding festivities.";
+    private static final int EVENT_BETHAK_INDEX = 0;
 
     private static final String EVENT_TITLE_SANGEET = "Family Drama";
     private static final String EVENT_DATE_SANGEET = "1/1/2016 6:00 PM";
@@ -31,16 +34,18 @@ public class EventData {
     private static final String EVENT_FOOD_SANGEET = "Ahmedabadi street food specials";
     private static final String EVENT_DETAIL_SANGEET = "This is where we celebrate union of the two souls with music and dance. " +
             "This event features singing sensations from the mehta and shah family and super star dance performances by our friends and family." +
-            " After the drama let your hair down and rock to the DJs dance numbers. And get your Gujju on coz we are going to Garba all night!!.";
+            " After the drama let your hair down and rock to the DJs dance numbers. And bring your Gujju moves coz we are going to Garba all night!!.";
+    private static final int EVENT_SANGEET_INDEX = 1;
 
     private static final String EVENT_TITLE_RING_CEREMONY = "Ring Ceremony & Kathak Dance";
     private static final String EVENT_DATE_RING_CEREMONY = "1/2/2016 7:00 PM";
     private static final int EVENT_THUMBNAIL_RING_CEREMONY = R.drawable.ring_ceremony_thumb;
     private static final int EVENT_COVER_RING_CEREMONY = R.drawable.ring_ceremony;
     private static final String EVENT_FOOD_RING_CEREMONY = "Rajasthani";
-    private static final String EVENT_DETAIL_RING_CEREMONY = "Witness the moment when Parth and Priya officially mark their territories " +
+    private static final String EVENT_DETAIL_RING_CEREMONY = "Witness the moment as we officially mark our territories " +
             "by putting a ring on each other. Ring ceremony is followed a Kathak Dance presentation - “Angika - Journeys in Love” " +
             "featuring noted Kathak dancer Sanjukta Sinha.";
+    private static final int EVENT_RING_CEREMONY_INDEX = 2;
 
     private static final String EVENT_TITLE_PRE_WED_DINNER = "Reception";
     private static final String EVENT_DATE_PRE_WED_DINNER = "1/3/2016 7:00 PM";
@@ -48,8 +53,9 @@ public class EventData {
     private static final int EVENT_COVER_PRE_WED_DINNER = R.drawable.reception_1;
     private static final String EVENT_FOOD_PRE_WED_DINNER = "Global and Indian food";
     private static final String EVENT_DETAIL_PRE_WED_DINNER = "Join us in celebrating the wedding with this Grand Wedding Reception. " +
-            "Enjoy the unique food with live music. Wish the bride and groom well for their future. Help them gear up for this new chapter in " +
-            "their life with your own experiences and innovative wedding jokes ;) !";
+            "Enjoy the unique food with live music and shower us with your blessings. Help us gear up for this new chapter in " +
+            "their life with your own experiences and \"innovative\"(clichéd) wedding jokes ;) !";
+    private static final int EVENT_PRE_WED_DINNER_INDEX = 3;
 
     private static final String EVENT_TITLE_GRAH_SHANTI = "Ganesh, Grah Shanti and Mehndi";
     private static final String EVENT_DATE_GRAH_SHANTI_START = "1/4/2016 4:00 PM";
@@ -58,6 +64,7 @@ public class EventData {
     private static final String EVENT_FOOD_GRAH_SHANTI = "Gujarati";
     private static final String EVENT_DETAIL_GRAH_SHANTI = "Every Indian wedding begins with worshipping Lord Ganesh. " +
             "Following this will be a Grah Shanti ceremony and Mehndi for all the girls.";
+    private static final int EVENT_GRAH_SHANTI_INDEX = 4;
 
 
     private static final String EVENT_TITLE_WEDDING = "Wedding";
@@ -68,6 +75,7 @@ public class EventData {
     private static final String EVENT_DETAIL_WEDDING = "Today is the day we have been waiting for. The day both families will officially become one and the bride and groom" +
             " commit to each other for life. Dance in the baarat, fiercely compete for the groom’s shoes, shower the bride and groom " +
             "with flowers and share our joy.";
+    private static final int EVENT_WEDDING_INDEX = 5;
 
     private static final String EVENT_ADDRESS_HOME = "15 Arjav Society";
     private static final String EVENT_ADDRESS_HOME_DETAIL = "15 Arjav Society, Opposite GulmorPark Mall, Satellite Road, Ahmedabad 380015";
@@ -78,14 +86,14 @@ public class EventData {
     private static final String EVENT_ADDRESS_KKFARM_URI = "google.navigation:q=23.0410318,72.434358";
 
     private static final String EVENT_ADDRESS_ARJUNFARM = "Arjun Farms";
-    private static final String EVENT_ADDRESS_ARJUNFARM_DETAIL = "Arjun Farm, Shilaj - Rancharda Road, Ahmedabad 382165";
-    private static final String EVENT_ADDRESS_ARJUNFARM_URI = "google.navigation:q=23.1029261,72.4332615,15.58z";
+    private static final String EVENT_ADDRESS_ARJUNFARM_DETAIL = "41 Arjun Farm, Shilaj - Rancharda Road, Ahmedabad 382165";
+    private static final String EVENT_ADDRESS_ARJUNFARM_URI = "google.navigation:q=23.1029261,72.4332615";
 
     public static Event getEvent(int index) {
-        return getEvents().get(index);
+        return events.get(index);
     }
 
-    public static ArrayList<Event> getEvents() {
+    public static ArrayList<Event> getEvents(Context context) {
         if(events == null) {
             events = new ArrayList<Event>(10);
             SimpleDateFormat dateFormat = new SimpleDateFormat(Constants.MM_DD_YY);
@@ -93,43 +101,57 @@ public class EventData {
             Date dateEnd = null;
             Uri uri = null;
             Event event = null;
+            String inviteCode = InviteCode.getInviteCode(context);
+            char[] inviteCodeAry = inviteCode.toCharArray();
             try {
 
-                dateStart = dateFormat.parse(EVENT_DATE_BETHAK);
-                event = new Event(EVENT_TITLE_BETHAK,dateStart,null,EVENT_ADDRESS_HOME,
-                        EVENT_ADDRESS_HOME_DETAIL,Uri.parse(EVENT_ADDRESS_HOME_URI),
-                        EVENT_THUMBNAIL_BETHAK, EVENT_COVER_BETHAK,EVENT_FOOD_BETHAK,EVENT_DETAIL_BETHAK);
-                events.add(event);
+                if(InviteCode.isInviteCharValid(inviteCodeAry[EVENT_BETHAK_INDEX])) {
+                    dateStart = dateFormat.parse(EVENT_DATE_BETHAK);
+                    event = new Event(EVENT_TITLE_BETHAK, dateStart, null, EVENT_ADDRESS_HOME,
+                            EVENT_ADDRESS_HOME_DETAIL, Uri.parse(EVENT_ADDRESS_HOME_URI),
+                            EVENT_THUMBNAIL_BETHAK, EVENT_COVER_BETHAK, EVENT_FOOD_BETHAK, EVENT_DETAIL_BETHAK);
+                    events.add(event);
+                }
 
-                dateStart = dateFormat.parse(EVENT_DATE_SANGEET);
-                event = new Event(EVENT_TITLE_SANGEET,dateStart,null,EVENT_ADDRESS_HOME,
-                        EVENT_ADDRESS_HOME_DETAIL,Uri.parse(EVENT_ADDRESS_HOME_URI),
-                        EVENT_THUMBNAIL_SANGEET,EVENT_COVER_SANGEET,EVENT_FOOD_SANGEET,EVENT_DETAIL_SANGEET);
-                events.add(event);
+                if(InviteCode.isInviteCharValid(inviteCodeAry[EVENT_SANGEET_INDEX])) {
+                    dateStart = dateFormat.parse(EVENT_DATE_SANGEET);
+                    event = new Event(EVENT_TITLE_SANGEET, dateStart, null, EVENT_ADDRESS_HOME,
+                            EVENT_ADDRESS_HOME_DETAIL, Uri.parse(EVENT_ADDRESS_HOME_URI),
+                            EVENT_THUMBNAIL_SANGEET, EVENT_COVER_SANGEET, EVENT_FOOD_SANGEET, EVENT_DETAIL_SANGEET);
+                    events.add(event);
+                }
 
-                dateStart = dateFormat.parse(EVENT_DATE_RING_CEREMONY);
-                event = new Event(EVENT_TITLE_RING_CEREMONY,dateStart,null,EVENT_ADDRESS_HOME,
-                        EVENT_ADDRESS_HOME_DETAIL,Uri.parse(EVENT_ADDRESS_HOME_URI),
-                        EVENT_THUMBNAIL_RING_CEREMONY,EVENT_COVER_RING_CEREMONY,EVENT_FOOD_RING_CEREMONY,EVENT_DETAIL_RING_CEREMONY);
-                events.add(event);
+                if(InviteCode.isInviteCharValid(inviteCodeAry[EVENT_RING_CEREMONY_INDEX])) {
+                    dateStart = dateFormat.parse(EVENT_DATE_RING_CEREMONY);
+                    event = new Event(EVENT_TITLE_RING_CEREMONY, dateStart, null, EVENT_ADDRESS_HOME,
+                            EVENT_ADDRESS_HOME_DETAIL, Uri.parse(EVENT_ADDRESS_HOME_URI),
+                            EVENT_THUMBNAIL_RING_CEREMONY, EVENT_COVER_RING_CEREMONY, EVENT_FOOD_RING_CEREMONY, EVENT_DETAIL_RING_CEREMONY);
+                    events.add(event);
+                }
 
-                dateStart = dateFormat.parse(EVENT_DATE_PRE_WED_DINNER);
-                event = new Event(EVENT_TITLE_PRE_WED_DINNER,dateStart,null,EVENT_ADDRESS_KKFARM,
-                        EVENT_ADDRESS_KKFARM_DETAIL,Uri.parse(EVENT_ADDRESS_KKFARM_URI),
-                        EVENT_THUMBNAIL_PRE_WED_DINNER, EVENT_COVER_PRE_WED_DINNER, EVENT_FOOD_PRE_WED_DINNER, EVENT_DETAIL_PRE_WED_DINNER);
-                events.add(event);
+                if(InviteCode.isInviteCharValid(inviteCodeAry[EVENT_PRE_WED_DINNER_INDEX])) {
+                    dateStart = dateFormat.parse(EVENT_DATE_PRE_WED_DINNER);
+                    event = new Event(EVENT_TITLE_PRE_WED_DINNER, dateStart, null, EVENT_ADDRESS_KKFARM,
+                            EVENT_ADDRESS_KKFARM_DETAIL, Uri.parse(EVENT_ADDRESS_KKFARM_URI),
+                            EVENT_THUMBNAIL_PRE_WED_DINNER, EVENT_COVER_PRE_WED_DINNER, EVENT_FOOD_PRE_WED_DINNER, EVENT_DETAIL_PRE_WED_DINNER);
+                    events.add(event);
+                }
 
-                dateStart = dateFormat.parse(EVENT_DATE_GRAH_SHANTI_START);
-                event = new Event(EVENT_TITLE_GRAH_SHANTI,dateStart,null,EVENT_ADDRESS_HOME,
-                        EVENT_ADDRESS_HOME_DETAIL,Uri.parse(EVENT_ADDRESS_HOME_URI),
-                        EVENT_THUMBNAIL_GRAH_SHANTI,EVENT_COVER_GRAH_SHANTI, EVENT_FOOD_GRAH_SHANTI, EVENT_DETAIL_GRAH_SHANTI);
-                events.add(event);
+                if(InviteCode.isInviteCharValid(inviteCodeAry[EVENT_GRAH_SHANTI_INDEX])) {
+                    dateStart = dateFormat.parse(EVENT_DATE_GRAH_SHANTI_START);
+                    event = new Event(EVENT_TITLE_GRAH_SHANTI, dateStart, null, EVENT_ADDRESS_HOME,
+                            EVENT_ADDRESS_HOME_DETAIL, Uri.parse(EVENT_ADDRESS_HOME_URI),
+                            EVENT_THUMBNAIL_GRAH_SHANTI, EVENT_COVER_GRAH_SHANTI, EVENT_FOOD_GRAH_SHANTI, EVENT_DETAIL_GRAH_SHANTI);
+                    events.add(event);
+                }
 
-                dateStart = dateFormat.parse(EVENT_DATE_WEDDING);
-                event = new Event(EVENT_TITLE_WEDDING,dateStart,null,EVENT_ADDRESS_ARJUNFARM,
-                        EVENT_ADDRESS_ARJUNFARM_DETAIL,Uri.parse(EVENT_ADDRESS_ARJUNFARM_URI),
-                        EVENT_THUMBNAIL_WEDDING,EVENT_COVER_WEDDING, EVENT_FOOD_WEDDING,EVENT_DETAIL_WEDDING);
-                events.add(event);
+                if(InviteCode.isInviteCharValid(inviteCodeAry[EVENT_WEDDING_INDEX])) {
+                    dateStart = dateFormat.parse(EVENT_DATE_WEDDING);
+                    event = new Event(EVENT_TITLE_WEDDING, dateStart, null, EVENT_ADDRESS_ARJUNFARM,
+                            EVENT_ADDRESS_ARJUNFARM_DETAIL, Uri.parse(EVENT_ADDRESS_ARJUNFARM_URI),
+                            EVENT_THUMBNAIL_WEDDING, EVENT_COVER_WEDDING, EVENT_FOOD_WEDDING, EVENT_DETAIL_WEDDING);
+                    events.add(event);
+                }
 
             } catch (ParseException e) {
                 e.printStackTrace();

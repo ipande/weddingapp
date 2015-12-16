@@ -18,9 +18,10 @@
     <string name="navigate">Navigate</string>
     <string name="cancel">Cancel</string>
     <string name="title_activity_our_story">Our Love Story</string>
-    <string name="server_prefs_file">desipride.socialshaadi.SERVER_PREFS_FILE</string>
+    <string name="prefs_file">desipride.socialshaadi.SERVER_PREFS_FILE</string>
     <string name="server_hostname">hostname</string>
     <string name="default_hostname">localhost:5000</string>
+    <string name="wedding_code">weddingcode</string>
 
     <string name="title_app_name">Parth Priya Wedding</string>
     <string name="title_activity_family_info_activity">Family</string>
@@ -28,6 +29,8 @@
     <string name="parth_family">Parth\'s Family</string>
     <string name="our_story_parth_1">Priya and I have known each other since we were toddlers</string>
     <string name="our_story_parth_2">I started to woo her when I was in the 8th grade. After 3 years of continuous efforts, penance and lots of unsuccessful attempts of establishing my boyfriend status I finally succeeded in August, 2006. \n-Parth</string>
-    <string name="our_story_priya_1">Two decades of knowing, One decade of dating and a couple of years of long distance, a few rough patches and a gazillion fights later.. WE ARE GETTING MARRIED! Seen each other through hyper childhood years to awkward teenage years and finally to mature(or not) adulthood.. Guess that wasn\'t enough.. so lets try forever, shall we?\n-Priya</string>
+    <string name="our_story_priya_1">Two decades of knowing, one decade of dating, a couple of years of long distance, a few rough patches and a gazillion fights later.. WE ARE GETTING MARRIED! Seen each other through hyper childhood years to awkward teenage years and finally to mature(or not) adulthood.. Guess that wasn\'t enough.. so lets try forever, shall we?\n-Priya</string>
+    <string name="enter_invite_code">Please enter invite code:</string>
+    <string name="invite_code_hint">XXX</string>
 
 </resources>

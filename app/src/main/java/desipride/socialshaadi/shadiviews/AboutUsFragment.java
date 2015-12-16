@@ -41,7 +41,6 @@ public class AboutUsFragment extends Fragment implements View.OnClickListener {
         ImageView parthFamily = (ImageView)view.findViewById(R.id.parth_family);
         ImageView priyaFamily = (ImageView)view.findViewById(R.id.priya_family);
 
-        Picasso.with(getActivity()).setIndicatorsEnabled(true);
         Picasso.with(getActivity())
                 .load(R.drawable.parth_priya_circle).into(parthPriyaAboutUs);
         Picasso.with(getActivity())

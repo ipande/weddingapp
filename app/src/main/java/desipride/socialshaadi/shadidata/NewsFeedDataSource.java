@@ -29,7 +29,7 @@ public class NewsFeedDataSource {
         values.put(DbContract.NewsFeedTable._ID, newsFeedItem.getId());
         values.put(DbContract.NewsFeedTable.COLUMN_NAME_URL, newsFeedItem.getUrl());
         values.put(DbContract.NewsFeedTable.COLUMN_NAME_CAPTION, newsFeedItem.getCaption());
-        values.put(DbContract.NewsFeedTable.COLUMN_NAME_MEDIATYPE, newsFeedItem.getMediaType().ordinal());
+        values.put(DbContract.NewsFeedTable.COLUMN_NAME_MEDIATYPE, newsFeedItem.getDimentions());
 
         long newRowId;
         newRowId = db.insertWithOnConflict (
@@ -37,6 +37,7 @@ public class NewsFeedDataSource {
                 null,
                 values,
                 SQLiteDatabase.CONFLICT_REPLACE);
+        db.close();
     return newRowId;
     }
 
@@ -52,8 +53,7 @@ public class NewsFeedDataSource {
         }
 
         cursor.close();
-
-
+        db.close();
     }
 
     public static Cursor queryAllNewsFeedItemsGetCursor(Context context) {
@@ -61,6 +61,7 @@ public class NewsFeedDataSource {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.query(DbContract.NewsFeedTable.TABLE_NAME, NewdFeedColumns, null, null, null, null, DbContract.NewsFeedTable._ID + " DESC");
         cursor.moveToFirst();
+        db.close();
         return cursor;
     }
 
@@ -69,13 +70,7 @@ public class NewsFeedDataSource {
         item.setId(cursor.getLong(0));
         item.setUrl(cursor.getString(1));
         item.setCaption(cursor.getString(2));
-        int typeOrdinal = cursor.getInt(3);
-        if(typeOrdinal >= NewsFeedItem.NewsFeedItemType.values().length) {
-            Log.d(TAG,"Invalid item type ordinal");
-            item.setMediaType(NewsFeedItem.NewsFeedItemType.UNKNOWN);
-        } else {
-            item.setMediaType(NewsFeedItem.NewsFeedItemType.values()[typeOrdinal]);
-        }
+        item.setDimentions(cursor.getString(3));
         return item;
     }
 }

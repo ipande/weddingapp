@@ -38,9 +38,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 
+import desipride.socialshaadi.BuildConfig;
 import desipride.socialshaadi.R;
 import desipride.socialshaadi.desipride.socialshaadi.utils.ConfigData;
 import desipride.socialshaadi.desipride.socialshaadi.utils.CursorRecyclerViewAdapter;
+import desipride.socialshaadi.desipride.socialshaadi.utils.DeviceDimensionsHelper;
 import desipride.socialshaadi.shadidata.NewsFeedDataSource;
 import desipride.socialshaadi.shadidata.NewsFeedItem;
 
@@ -56,7 +58,6 @@ import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.NEWS
 import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.SELECT_FILE;
 import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.TASK_ABORTED;
 import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.UPLOAD_IMAGE;
-import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.NEWSFEED_IMAGE_HEIGHT;
 
 /**
  * Created by parth.mehta on 10/4/15.
@@ -68,6 +69,7 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
     NewsFeedCursorAdapter newsFeedCursorAdapter;
     SwipeRefreshLayout newsFeedRefreshLayout;
     private RecyclerView recyclerNewsFeedView;
+    private static final int CARD_MARGIN = 10;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -80,8 +82,10 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
         View view = inflater.inflate(R.layout.news_feed_frament, container, false);
         uploadPictureButton = (ImageView)view.findViewById(R.id.upload_image_button);
         uploadPictureButton.setOnClickListener(this);
-        uploadPictureButton.setLongClickable(true);
-        uploadPictureButton.setOnLongClickListener(this);
+        if(BuildConfig.DEBUG) {
+            uploadPictureButton.setLongClickable(true);
+            uploadPictureButton.setOnLongClickListener(this);
+        }
         newsFeedRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.newsfeed_swipe_refresh_layout);
 
         recyclerNewsFeedView = (RecyclerView) view.findViewById(R.id.newsfeed);
@@ -102,7 +106,6 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
                 refreshNewsFeed();
             }
         });
-        Picasso.with(getActivity()).setIndicatorsEnabled(true);
         return view;
     }
 
@@ -255,7 +258,7 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
                     s = s.append(sResponse);
                 }
                 responseData = s.toString();
-                Log.d(TAG,responseData);
+                Log.v(TAG,responseData);
             } catch (IOException e) {
                 Log.e(TAG,"",e);
                 return ERROR;
@@ -268,10 +271,10 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
                 Log.e(TAG,"Invalid Response" ,e);
                 return ERROR;
             }
-
+            Log.d(TAG,"Received " + items.length + " items in response");
 
             for(NewsFeedItem item : items) {
-                Log.d(TAG,"Adding Item to database: " + item);
+                Log.v(TAG,"Adding Item to database: " + item);
                 NewsFeedDataSource.insertNewsFeedItem(item,context);
             }
 
@@ -324,6 +327,7 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
     private class NewsFeedCursorAdapter extends CursorRecyclerViewAdapter<NewsFeedViewHolder> {
 
         Context context;
+        int targetImageWidth;
 
         public NewsFeedCursorAdapter(Context context, Cursor cursor) {
             super(context, cursor);
@@ -333,11 +337,19 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
         @Override
         public void onBindViewHolder(NewsFeedViewHolder newsFeedViewHolder, Cursor cursor) {
             final NewsFeedItem newsFeedItem = NewsFeedDataSource.cursorToNewsFeedItem(cursor);
-            Log.d(TAG,"onCreateViewHolder id:" + newsFeedItem.getId());
+            Log.d(TAG, "onBindViewHolder id:" + newsFeedItem.getId() + " dimentions:" + newsFeedItem.getDimentions());
             newsFeedViewHolder.caption.setText(newsFeedItem.getCaption());
+            // get the width of imageview.
+            int targetImageWidth = getTargetImageWidth(getContext());
+            int targetImageHeight = newsFeedItem.height*targetImageWidth/newsFeedItem.width;
+            Log.d(TAG,"Setting image view to height " + targetImageHeight);
+            newsFeedViewHolder.image.getLayoutParams().height = targetImageHeight;
             Picasso.with(context)
-                    .load(newsFeedItem.getUrl()).resize(0,NEWSFEED_IMAGE_HEIGHT).placeholder(R.drawable.default_image)
+                    .load(newsFeedItem.getUrl()).resize(targetImageWidth,targetImageHeight).placeholder(R.drawable.placeholder)
                     .into(newsFeedViewHolder.image);
+//            Picasso.with(context)
+//                    .load(newsFeedItem.getUrl()).placeholder(R.drawable.placeholder)
+//                    .into(newsFeedViewHolder.image);
 
             newsFeedViewHolder.view.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -362,6 +374,15 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
 
             return new NewsFeedViewHolder(itemView);
         }
+
+        private int getTargetImageWidth(Context context) {
+            if(targetImageWidth == 0) {
+                int width = (int)(DeviceDimensionsHelper.getDisplayWidth(context) - 2*DeviceDimensionsHelper.convertDpToPixel(CARD_MARGIN,context));
+                targetImageWidth = width;
+            }
+            return  targetImageWidth;
+
+        }
     }
 
     private class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedViewHolder> {
@@ -381,7 +402,7 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
 
         @Override
         public NewsFeedViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-            Log.d(TAG,"onCreateViewHolder i:" + i);
+            Log.d(TAG, "onCreateViewHolder i:" + i);
             View itemView = LayoutInflater.
                     from(viewGroup.getContext()).
                     inflate(R.layout.news_feed_card, viewGroup, false);

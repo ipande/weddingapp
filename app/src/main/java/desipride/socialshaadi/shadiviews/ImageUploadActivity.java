@@ -28,6 +28,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -91,8 +93,8 @@ public class ImageUploadActivity extends ActionBarActivity implements View.OnCli
         relativeLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
         int width = relativeLayout.getWidth();
         int height = relativeLayout.getHeight();
-        Log.d(TAG,"onGlobalLayout W:" + width +", H:"+ height);
-        imageBitmap = ImageLoader.loadImage(imageToUpload, imageUri,this.getContentResolver(),0,width);
+        Log.d(TAG, "onGlobalLayout W:" + width + ", H:" + height);
+        imageBitmap = ImageLoader.loadImage(imageToUpload, imageUri, this.getContentResolver(), 0, width);
 
     }
 
@@ -169,6 +171,9 @@ public class ImageUploadActivity extends ActionBarActivity implements View.OnCli
             try {
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 imageBitmap.compress(Bitmap.CompressFormat.JPEG, 50, bos);
+                Log.d(TAG, "Image dimentions after compressing h x w:" + imageBitmap.getHeight() + " x " + imageBitmap.getWidth());
+                String dimentions = getJsonDimentions(imageBitmap.getWidth(),imageBitmap.getHeight());
+
                 byte[] data = bos.toByteArray();
 
                 postRequest = new HttpPost(HTTP_PREFIX+ ConfigData.getServerHostname(context)+IMAGE_UPLOAD_URL);
@@ -178,6 +183,7 @@ public class ImageUploadActivity extends ActionBarActivity implements View.OnCli
                 reqEntity.addPart("file", bab);
                 reqEntity.addPart("filename",new StringBody(SAMPLE_FILE_NAME));
                 reqEntity.addPart("caption", new StringBody(caption));
+                reqEntity.addPart("mediatype",new StringBody(dimentions));
                 postRequest.setEntity(reqEntity);
                 HttpResponse response = httpClient.execute(postRequest);
 
@@ -211,6 +217,18 @@ public class ImageUploadActivity extends ActionBarActivity implements View.OnCli
 
         }
 
+    }
+
+    private String getJsonDimentions(int width, int height) {
+        JSONObject imageDimentions = new JSONObject();
+        try {
+            imageDimentions.put("height",height);
+            imageDimentions.put("width",width);
+        } catch (JSONException e) {
+            Log.e(TAG,"" + e);
+
+        }
+        return imageDimentions.toString();
     }
 
 }

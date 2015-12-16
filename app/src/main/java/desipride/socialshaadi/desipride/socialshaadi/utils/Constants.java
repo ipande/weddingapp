@@ -41,6 +41,9 @@ public class Constants {
     public static final int PRIYA_FAMILY_CODE = 2;
     public static final int INVALID_FAMILY_CODE = 0;
 
+    public static final String DEFAULT_INVITE_CODE = "XXXXXX";
+    public static final int INVITE_CODE_LENGTH = 6;
+
 
 
 }

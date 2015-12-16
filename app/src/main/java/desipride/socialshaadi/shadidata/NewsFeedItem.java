@@ -1,5 +1,10 @@
 package desipride.socialshaadi.shadidata;
 
+import android.util.Log;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by parth.mehta on 10/10/15.
  */
@@ -7,13 +12,14 @@ public class NewsFeedItem {
     private Long _id;
     private String url;
     private String caption;
-    private NewsFeedItemType mediaType;
-    public enum NewsFeedItemType {IMAGE,VIDEO,UNKNOWN};
+    private String mediaType;
+    public int width;
+    public int height;
 
 
     public NewsFeedItem() {}
 
-    public NewsFeedItem(long id,String url,String caption, NewsFeedItemType mediaType) {
+    public NewsFeedItem(long id,String url,String caption, String mediaType) {
         _id = id;
         this.url = url;
         this.caption = caption;
@@ -44,12 +50,21 @@ public class NewsFeedItem {
         this.caption = caption;
     }
 
-    public NewsFeedItemType getMediaType() {
+
+    public String getDimentions() {
         return mediaType;
     }
 
-    public void setMediaType(NewsFeedItemType mediaType) {
-        this.mediaType = mediaType;
+    public void setDimentions(String dimentions) {
+        this.mediaType = dimentions;
+        try {
+            JSONObject dimentionsJson = new JSONObject(dimentions);
+            height = dimentionsJson.getInt("height");
+            width = dimentionsJson.getInt("width");
+        } catch (JSONException e) {
+            Log.e(NewsFeedItem.class.getSimpleName(),"" + e);
+
+        }
     }
 
     @Override
@@ -58,13 +73,9 @@ public class NewsFeedItem {
         builder.append("{ Id:").append(_id);
         builder.append(", url:").append(url);
         builder.append(", caption:").append(caption);
-        builder.append(", mediaType:");
-        if(mediaType == NewsFeedItemType.IMAGE) {
-            builder.append("Image");
-        }else if(mediaType == NewsFeedItemType.VIDEO) {
-            builder.append("Video");
-        }
+        builder.append(", mediaType:").append(mediaType);
         builder.append("}");
         return builder.toString();
     }
+
 }
