@@ -22,8 +22,8 @@ import desipride.socialshaadi.shadidata.FamilyMemberData;
 
 import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.FAMILY_IDENTIFIER;
 import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.INVALID_FAMILY_CODE;
-import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.PARTH_FAMILY_CODE;
-import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.PRIYA_FAMILY_CODE;
+import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.ISHAN_FAMILY_CODE;
+import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.MUGDHA_FAMILY_CODE;
 
 public class FamilyInfoActivity extends AppCompatActivity {
     private static final String TAG = FamilyInfoActivity.class.getSimpleName();
@@ -41,13 +41,13 @@ public class FamilyInfoActivity extends AppCompatActivity {
         ArrayList<FamilyMember> familyMembers = null;
         int familyCode = getIntent().getIntExtra(FAMILY_IDENTIFIER, INVALID_FAMILY_CODE);
         switch(familyCode) {
-            case PARTH_FAMILY_CODE:
-                familyMembers = FamilyMemberData.getParthFamilyMembers();
-                getSupportActionBar().setTitle(getString(R.string.parth_family));
+            case ISHAN_FAMILY_CODE:
+                familyMembers = FamilyMemberData.getIshanFamilyMembers();
+                getSupportActionBar().setTitle(getString(R.string.ishan_family));
                 break;
-            case PRIYA_FAMILY_CODE:
+            case MUGDHA_FAMILY_CODE:
                 familyMembers = FamilyMemberData.getPriyaFamilyMembers();
-                getSupportActionBar().setTitle(getString(R.string.priya_family));
+                getSupportActionBar().setTitle(getString(R.string.mugdha_family));
                 break;
             case INVALID_FAMILY_CODE:
                 Log.w(TAG, "Invalid family code in startng activity");

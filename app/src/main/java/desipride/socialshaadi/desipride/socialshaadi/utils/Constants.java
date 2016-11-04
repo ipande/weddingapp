@@ -37,8 +37,8 @@ public class Constants {
     public static final int NEWSFEED_IMAGE_HEIGHT = 800;
 
     public static final String FAMILY_IDENTIFIER = "FAMILY";
-    public static final int PARTH_FAMILY_CODE = 1;
-    public static final int PRIYA_FAMILY_CODE = 2;
+    public static final int ISHAN_FAMILY_CODE = 1;
+    public static final int MUGDHA_FAMILY_CODE = 2;
     public static final int INVALID_FAMILY_CODE = 0;
 
     public static final String DEFAULT_INVITE_CODE = "XXXXXX";

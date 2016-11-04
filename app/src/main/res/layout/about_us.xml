@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="0px"
             android:layout_margin="8dp"
-            android:id="@+id/priya_parth_about_us"
+            android:id="@+id/imug_about_us"
             android:gravity="center"
             android:layout_weight="9.5"/>
 
@@ -27,7 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Our Love Story"
+            android:text="Our Story"
             android:textColor="@color/material_blue_grey_800"
             android:textStyle="bold"
             android:gravity="center"
@@ -52,7 +52,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
             android:weightSum="10"
-            android:id="@+id/parth_family_view">
+            android:id="@+id/ishan_family_view">
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="0px"
@@ -65,7 +65,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Parth's Family"
+                android:text="Ishan's Family"
                 android:textColor="@color/material_blue_grey_800"
                 android:textStyle="bold"
                 android:gravity="center"
@@ -82,7 +82,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_weight="1"
             android:weightSum="10"
-            android:id="@+id/priya_family_view">
+            android:id="@+id/mugdha_family_view">
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="0px"
@@ -95,7 +95,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Priya's Family"
+                android:text="Mugdha's Family"
                 android:textColor="@color/material_blue_grey_800"
                 android:textStyle="bold"
                 android:gravity="center"

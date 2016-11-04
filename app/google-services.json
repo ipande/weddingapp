@@ -1,0 +1,59 @@
+{
+  "project_info": {
+    "project_number": "365168303992",
+    "firebase_url": "https://imugweddingapp.firebaseio.com",
+    "project_id": "imugweddingapp",
+    "storage_bucket": "imugweddingapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:365168303992:android:1b1bfdfa2c5ff33d",
+        "android_client_info": {
+          "package_name": "desipride.socialshaadi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "365168303992-4mdcbiv7jb4se2d0g0ooc0guujmrt77l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "desipride.socialshaadi",
+            "certificate_hash": "960A11CB10E8217022A04371DE15B30BA7A52D8F"
+          }
+        },
+        {
+          "client_id": "365168303992-hh6rmi7jiijupf5rkuddhtl4tnq699nq.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "365168303992-7mtls7q3a3brrceekgt9ljepkaob7hi2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3NIGp9hdCqIJzKbezEA53Y2oAY-ppUGg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "365168303992-hh6rmi7jiijupf5rkuddhtl4tnq699nq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

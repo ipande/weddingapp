@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +17,11 @@ import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -33,6 +39,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.InputStreamReader;
 
 import desipride.socialshaadi.R;
@@ -59,6 +66,7 @@ public class ImageUploadActivity extends ActionBarActivity implements View.OnCli
     Bitmap imageBitmap;
     Uri imageUri;
     RelativeLayout relativeLayout;
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +85,25 @@ public class ImageUploadActivity extends ActionBarActivity implements View.OnCli
         ViewTreeObserver vto = relativeLayout.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(this);
 
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageRef = storage.getReferenceFromUrl("gs://imugweddingapp.appspot.com");
+        StorageReference imagesRef = storageRef.child("trial_images");
+        StorageReference ajjiRef = storageRef.child("trial_images/ajji.jpeg");
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                    Log.d(TAG,"user: "+user.getEmail());
+                } else {
+                    // User is signed out
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                }
+            }
+        };
     }
 
 
@@ -84,8 +111,12 @@ public class ImageUploadActivity extends ActionBarActivity implements View.OnCli
     public void onClick(View v) {
         String captionString  = caption.getText().toString();
 
-        ImageUploadTask task = new ImageUploadTask(this,imageBitmap,captionString);
-        task.execute();
+//        ImageUploadTask task = new ImageUploadTask(this,imageBitmap,captionString);
+//        task.execute();
+        Uri imgURI = Uri.parse("android.resource://desipride.socialshaadi/drawable/archana_pande_small.jpg");
+
+
+
     }
 
     @Override

@@ -8,23 +8,23 @@ import desipride.socialshaadi.R;
  * Created by parth.mehta on 9/15/15.
  */
 public class FamilyMemberData {
-    static private ArrayList<FamilyMember> parthFamilyMembers = null;
+    static private ArrayList<FamilyMember> ishanFamilyMembers = null;
     static private ArrayList<FamilyMember> priyaFamilyMembers = null;
 
-    private static final String PARTH_MOTHER_NAME = "Nandini Mehta";
-    private static final String PARTH_MOTHER_RELATION = "Parth's Mother";
+    private static final String ISHAN_MOTHER_NAME = "Archana Pande";
+    private static final String ISHAN_MOTHER_RELATION = "Ishan's Mother";
     private static final String PARTH_MOTHER_INFO = "";
-    private static final int PARTH_MOTHER_IMAGE = R.drawable.nandini_mehta;
+    private static final int ISHAN_MOTHER_IMAGE = R.drawable.archana_pande_small;
 
-    private static final String PARTH_FATHER_NAME = "Chirag Mehta";
-    private static final String PARTH_FATHER_RELATION = "Parth's Father";
+    private static final String ISHAN_FATHER_NAME = "Jayant Pande";
+    private static final String ISHAN_FATHER_RELATION = "Ishan's Father";
     private static final String PARTH_FATHER_INFO = "";
-    private static final int PARTH_FATHER_IMAGE = R.drawable.chirag_mehta;
+    private static final int ISHAN_FATHER_IMAGE = R.drawable.jayant_pande_small_1;
 
-    private static final String PARTH_BA_NAME = "Nila Mehta a.k.a Nilaba";
-    private static final String PARTH_BA_RELATION = "Parth's Grandmother";
+    private static final String ISHAN_AJJI_NAME = "Prabha Pande a.k.a Ajji";
+    private static final String ISHAN_AJJI_RELATION = "Ishan's Grandmother";
     private static final String PARTH_BA_INFO = "";
-    private static final int PARTH_BA_IMAGE = R.drawable.nilaba;
+    private static final int ISHAN_AJJI_IMAGE = R.drawable.prabha_pande_photo_small;
 
 
     private static final String PARTH_FOI_NAME = "Vilas Mehta a.k.a VilasFoi";
@@ -32,7 +32,7 @@ public class FamilyMemberData {
     private static final String PARTH_FOI_INFO = "";
     private static final int PARTH_FOI_IMAGE = R.drawable.vilasfoi;
 
-    private static final String PRIYA_MOTER_NAME = "Shilpa Shah";
+    private static final String MUGDHA_MOTHER_NAME = "Neela Dongre";
     private static final String PRIYA_MOTHER_RELATION = "Priya's Mother";
     private static final String PRIYA_MOTHER_INFO = "";
     private static final int PRIYA_MOTHER_IMAGE = R.drawable.shilpa_shah;
@@ -63,28 +63,25 @@ public class FamilyMemberData {
     private static final int PRIYA_TSUK_IMAGE = R.drawable.tsukduuu;
 
 
-    public static FamilyMember getParthFamilyMember(int index) {
-        return getParthFamilyMembers().get(index);
+    public static FamilyMember getIshanFamilyMember(int index) {
+        return getIshanFamilyMembers().get(index);
     }
 
-    public static ArrayList<FamilyMember> getParthFamilyMembers() {
-        if(parthFamilyMembers == null) {
-            parthFamilyMembers = new ArrayList<FamilyMember>(5);
+    public static ArrayList<FamilyMember> getIshanFamilyMembers() {
+        if(ishanFamilyMembers == null) {
+            ishanFamilyMembers = new ArrayList<FamilyMember>(3);
             FamilyMember familyMember = null;
 
-            familyMember = new FamilyMember(PARTH_MOTHER_NAME,PARTH_MOTHER_RELATION,PARTH_MOTHER_INFO,PARTH_MOTHER_IMAGE);
-            parthFamilyMembers.add(familyMember);
+            familyMember = new FamilyMember(ISHAN_MOTHER_NAME, ISHAN_MOTHER_RELATION,PARTH_MOTHER_INFO, ISHAN_MOTHER_IMAGE);
+            ishanFamilyMembers.add(familyMember);
 
-            familyMember = new FamilyMember(PARTH_FATHER_NAME,PARTH_FATHER_RELATION,PARTH_FATHER_INFO,PARTH_FATHER_IMAGE);
-            parthFamilyMembers.add(familyMember);
+            familyMember = new FamilyMember(ISHAN_FATHER_NAME, ISHAN_FATHER_RELATION,PARTH_FATHER_INFO, ISHAN_FATHER_IMAGE);
+            ishanFamilyMembers.add(familyMember);
 
-            familyMember = new FamilyMember(PARTH_BA_NAME,PARTH_BA_RELATION,PARTH_BA_INFO,PARTH_BA_IMAGE);
-            parthFamilyMembers.add(familyMember);
-
-            familyMember = new FamilyMember(PARTH_FOI_NAME,PARTH_FOI_RELATION,PARTH_FOI_INFO,PARTH_FOI_IMAGE);
-            parthFamilyMembers.add(familyMember);
+            familyMember = new FamilyMember(ISHAN_AJJI_NAME, ISHAN_AJJI_RELATION,PARTH_BA_INFO, ISHAN_AJJI_IMAGE);
+            ishanFamilyMembers.add(familyMember);
         }
-        return parthFamilyMembers;
+        return ishanFamilyMembers;
     }
 
     public static ArrayList<FamilyMember> getPriyaFamilyMembers() {
@@ -95,7 +92,7 @@ public class FamilyMemberData {
             priyaFamilyMembers.add(familyMember);
             familyMember = new FamilyMember(PRIYA_BA_NAME,PRIYA_BA_RELATION,PRIYA_BA_INFO,PRIYA_BA_IMAGE);
             priyaFamilyMembers.add(familyMember);
-            familyMember = new FamilyMember(PRIYA_MOTER_NAME,PRIYA_MOTHER_RELATION,PRIYA_MOTHER_INFO,PRIYA_MOTHER_IMAGE);
+            familyMember = new FamilyMember(MUGDHA_MOTHER_NAME,PRIYA_MOTHER_RELATION,PRIYA_MOTHER_INFO,PRIYA_MOTHER_IMAGE);
             priyaFamilyMembers.add(familyMember);
             familyMember = new FamilyMember(PRIYA_FATHER_NAME,PRIYA_FATHER_RELATION,PRIYA_FATHER_INFO,PRIYA_FATHER_IMAGE);
             priyaFamilyMembers.add(familyMember);
