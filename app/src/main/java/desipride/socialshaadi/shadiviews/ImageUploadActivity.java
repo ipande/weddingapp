@@ -16,12 +16,15 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -39,7 +42,6 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.InputStreamReader;
 
 import desipride.socialshaadi.R;
@@ -66,7 +68,16 @@ public class ImageUploadActivity extends ActionBarActivity implements View.OnCli
     Bitmap imageBitmap;
     Uri imageUri;
     RelativeLayout relativeLayout;
-    private FirebaseAuth.AuthStateListener mAuthListener;
+    private StorageReference storageRef;
+    private StorageReference imgRef;
+    private ProgressBar pb;
+    private static Long currTime;
+    private String picURL;
+    private static final String STORAGE_URL = "trial_images";
+    private static final String SEPARATOR = "/";
+    private static final String CURRENT_PIC = "currentpic_";
+    private static final String JPEG_EXT = ".jpeg";
+    private static final String CAPTION = "caption";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,31 +91,80 @@ public class ImageUploadActivity extends ActionBarActivity implements View.OnCli
         uploadButton = (ImageView)findViewById(R.id.upload_image_icon);
         uploadButton.setOnClickListener(this);
 
+        pb = (ProgressBar) findViewById(R.id.pbUploading);
         relativeLayout = (RelativeLayout)findViewById(R.id.image_upload_activity_layout);
 
         ViewTreeObserver vto = relativeLayout.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(this);
+        currTime = System.currentTimeMillis();
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageRef = storage.getReferenceFromUrl("gs://imugweddingapp.appspot.com");
-        StorageReference imagesRef = storageRef.child("trial_images");
-        StorageReference ajjiRef = storageRef.child("trial_images/ajji.jpeg");
+        storageRef = storage.getReferenceFromUrl("gs://imugweddingapp.appspot.com");
+        picURL = STORAGE_URL + SEPARATOR + CURRENT_PIC + currTime + JPEG_EXT;
+        imgRef = storageRef.child(picURL);
 
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                    Log.d(TAG,"user: "+user.getEmail());
-                } else {
-                    // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                }
-            }
-        };
     }
+
+    private void uploadToFirebase(Bitmap bitmap, final String caption) {
+        if(bitmap!=null){
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+            byte[] data = baos.toByteArray();
+            final Intent resultIntent = new Intent();
+            if(imgRef !=null) {
+                UploadTask uploadTask = imgRef.putBytes(data);
+                uploadTask.addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Handle unsuccessful uploads
+                        Log.e(TAG, "File upload unsuccessful because: " + exception.getMessage());
+                        Log.d(TAG, "Image could not be uploaded, sending result back to actvity");
+                        pb.setVisibility(ProgressBar.INVISIBLE);
+                        setResult(CONNECTION_ERR, resultIntent);
+                        finish();
+                    }
+                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                        Log.d(TAG,"Image uploaded successfully");
+                        pb.setVisibility(ProgressBar.INVISIBLE);
+                        setResult(Activity.RESULT_OK, resultIntent);
+                        StorageMetadata updateMetadata = new StorageMetadata.Builder()
+                                                        .setCustomMetadata(CAPTION,caption)
+                                                        .build();
+                        // Update metadata properties
+                        imgRef.updateMetadata(updateMetadata)
+                                .addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+                                    @Override
+                                    public void onSuccess(StorageMetadata storageMetadata) {
+                                        // Updated metadata is in storageMetadata
+                                        Log.d(TAG,"Updated image caption");
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception exception) {
+                                        // Uh-oh, an error occurred!
+                                        Log.e(TAG,"Could not update caption because: "+exception);
+                                    }
+                                });
+                        resultIntent.putExtra("img_added", picURL);
+                        finish();
+
+                    }
+                });
+            } else {
+                Log.e(TAG,"User not auth into firebase");
+                Log.d(TAG, "Image could not be uploaded, sending result back to actvity");
+                pb.setVisibility(ProgressBar.INVISIBLE);
+                setResult(CONNECTION_ERR, resultIntent);
+                finish();
+            }
+        }
+    }
+
+
 
 
     @Override
@@ -113,11 +173,10 @@ public class ImageUploadActivity extends ActionBarActivity implements View.OnCli
 
 //        ImageUploadTask task = new ImageUploadTask(this,imageBitmap,captionString);
 //        task.execute();
-        Uri imgURI = Uri.parse("android.resource://desipride.socialshaadi/drawable/archana_pande_small.jpg");
-
-
-
+        pb.setVisibility(ProgressBar.VISIBLE);
+        uploadToFirebase(imageBitmap, captionString);
     }
+
 
     @Override
     public void onGlobalLayout() {

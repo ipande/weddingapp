@@ -22,6 +22,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
@@ -38,6 +43,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 
+import butterknife.OnClick;
 import desipride.socialshaadi.BuildConfig;
 import desipride.socialshaadi.R;
 import desipride.socialshaadi.desipride.socialshaadi.utils.ConfigData;
@@ -71,10 +77,55 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
     private RecyclerView recyclerNewsFeedView;
     private static final int CARD_MARGIN = 10;
 
+    private DatabaseReference firebaseDB;
+    private ChildEventListener mChildEventListener;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        ChildEventListener childEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "onChildAdded:" + dataSnapshot.getKey() + "prevChildName: "+s);
+                Log.d(TAG,"new image added: "+dataSnapshot.getValue());
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Log.d(TAG, "onChildChanged:" + dataSnapshot.getKey() + "prevChildName: "+s);
+                Log.d(TAG,"image changed at: "+dataSnapshot.getValue());
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onChildRemoved:" + dataSnapshot.getKey());
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        firebaseDB.addChildEventListener(childEventListener);
+        mChildEventListener = childEventListener;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        firebaseDB.removeEventListener(mChildEventListener);
     }
 
     @Override
@@ -98,7 +149,14 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
         newsFeedCursorAdapter = new NewsFeedCursorAdapter(getActivity(),
                 NewsFeedDataSource.queryAllNewsFeedItemsGetCursor(getActivity()));
         recyclerNewsFeedView.setAdapter(newsFeedCursorAdapter);
+
+        firebaseDB = FirebaseDatabase.getInstance().getReference("trial_images");
+
+        //TODO reenable refresh
         refreshNewsFeed();
+        //launchFirebaseUpload();
+
+
 
         newsFeedRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -133,6 +191,21 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
         startActivityForResult(i, UPLOAD_IMAGE);
     }
 
+    // So that all clients can refreshNewsfeed
+    private void updateFirebaseDB(String imgName){
+        // Write a message to the database
+        firebaseDB.push().setValue(imgName, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if(databaseError == null){
+                    Log.d(TAG,"Written to Firebase DB successfully");
+                }
+                else
+                    Log.e(TAG,"Writing to Firebase DB failed because: "+databaseError.getMessage());
+            }
+        });
+    }
+
 
     public void onActivityResult(int requestCode, int resultCode, Intent imageSelectedIntent) {
         Log.d(TAG, "Activity Result obtained ");
@@ -151,6 +224,9 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
                 if(resultCode == Activity.RESULT_OK) {
                     Log.d(TAG, "Image Uploaded Successfully");
                     Toast.makeText(getActivity(), IMAGE_UPLOAD_SUCCESS, Toast.LENGTH_SHORT).show();
+                    String imgadded = imageSelectedIntent.getStringExtra("img_added");
+                    Log.d(TAG,"This image was recently added: "+imgadded);
+                    updateFirebaseDB(imgadded);
                     refreshNewsFeed();
                 } else if(resultCode == Activity.RESULT_CANCELED) {
                     Log.d(TAG, "Result Cancelled, image not uploaded");
@@ -219,6 +295,11 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
 
         return true;
     }
+
+
+
+
+
 
     private class RefreshNewsFeedAsyncTask extends AsyncTask<Void,Void,Integer> {
         Gson gson;
