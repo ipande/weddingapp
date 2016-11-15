@@ -19,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.ChildEventListener;
@@ -28,7 +27,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
-import com.squareup.picasso.Picasso;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -37,22 +35,18 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+import org.parceler.Parcels;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.List;
 
-import butterknife.OnClick;
 import desipride.socialshaadi.BuildConfig;
 import desipride.socialshaadi.R;
 import desipride.socialshaadi.desipride.socialshaadi.utils.ConfigData;
-import desipride.socialshaadi.desipride.socialshaadi.utils.CursorRecyclerViewAdapter;
-import desipride.socialshaadi.desipride.socialshaadi.utils.DeviceDimensionsHelper;
 import desipride.socialshaadi.shadidata.NewsFeedDataSource;
 import desipride.socialshaadi.shadidata.NewsFeedItem;
 
-import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.APP_TAG;
 import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.CONNECTION_ERR;
 import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.CONNECTION_TIMEOUT_MS;
 import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.GET_NEWSFEED_URL;
@@ -72,7 +66,8 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
     public static final String TAG = NewsFeedFragment.class.getSimpleName();
 
     ImageView uploadPictureButton;
-    NewsFeedCursorAdapter newsFeedCursorAdapter;
+    FirebaseImgAdapter newsFeedAdapter;
+//    NewsFeedCursorAdapter newsFeedCursorAdapter;
     SwipeRefreshLayout newsFeedRefreshLayout;
     private RecyclerView recyclerNewsFeedView;
     private static final int CARD_MARGIN = 10;
@@ -126,6 +121,9 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
     public void onStop() {
         super.onStop();
         firebaseDB.removeEventListener(mChildEventListener);
+        // Clean up comments listener
+        newsFeedAdapter.cleanupListener();
+
     }
 
     @Override
@@ -137,6 +135,9 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
             uploadPictureButton.setLongClickable(true);
             uploadPictureButton.setOnLongClickListener(this);
         }
+
+        firebaseDB = FirebaseDatabase.getInstance().getReference("trial_firebase_objects");
+
         newsFeedRefreshLayout = (SwipeRefreshLayout)view.findViewById(R.id.newsfeed_swipe_refresh_layout);
 
         recyclerNewsFeedView = (RecyclerView) view.findViewById(R.id.newsfeed);
@@ -144,16 +145,18 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerNewsFeedView.setLayoutManager(llm);
+        newsFeedAdapter = new FirebaseImgAdapter(getActivity(),firebaseDB);
+        recyclerNewsFeedView.setAdapter(newsFeedAdapter);
 
-        NewsFeedDataSource.queryAllNewsFeedItems(getActivity());
-        newsFeedCursorAdapter = new NewsFeedCursorAdapter(getActivity(),
-                NewsFeedDataSource.queryAllNewsFeedItemsGetCursor(getActivity()));
-        recyclerNewsFeedView.setAdapter(newsFeedCursorAdapter);
+//        NewsFeedDataSource.queryAllNewsFeedItems(getActivity());
+//        newsFeedCursorAdapter = new NewsFeedCursorAdapter(getActivity(),
+//                NewsFeedDataSource.queryAllNewsFeedItemsGetCursor(getActivity()));
+//        recyclerNewsFeedView.setAdapter(newsFeedCursorAdapter);
 
-        firebaseDB = FirebaseDatabase.getInstance().getReference("trial_images");
+
 
         //TODO reenable refresh
-        refreshNewsFeed();
+//        refreshNewsFeed();
         //launchFirebaseUpload();
 
 
@@ -161,7 +164,7 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
         newsFeedRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshNewsFeed();
+//                refreshNewsFeed();
             }
         });
         return view;
@@ -192,9 +195,8 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
     }
 
     // So that all clients can refreshNewsfeed
-    private void updateFirebaseDB(String imgName){
-        // Write a message to the database
-        firebaseDB.push().setValue(imgName, new DatabaseReference.CompletionListener() {
+    private void updateFirebaseDB(String imgName, NewsFeedItem newlyAddedItem){
+        firebaseDB.push().setValue(newlyAddedItem, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if(databaseError == null){
@@ -226,8 +228,10 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
                     Toast.makeText(getActivity(), IMAGE_UPLOAD_SUCCESS, Toast.LENGTH_SHORT).show();
                     String imgadded = imageSelectedIntent.getStringExtra("img_added");
                     Log.d(TAG,"This image was recently added: "+imgadded);
-                    updateFirebaseDB(imgadded);
-                    refreshNewsFeed();
+                    NewsFeedItem newlyAddedItem = (NewsFeedItem) Parcels.unwrap(imageSelectedIntent.getParcelableExtra("NewsfeedItem"));
+                    Log.d(TAG,"Testing parceler: caption: "+newlyAddedItem.getCaption() + "img dim: " + newlyAddedItem.getDimentions());
+                    updateFirebaseDB(imgadded, newlyAddedItem);
+//                    refreshNewsFeed();
                 } else if(resultCode == Activity.RESULT_CANCELED) {
                     Log.d(TAG, "Result Cancelled, image not uploaded");
                 } else if(resultCode == TASK_ABORTED) {
@@ -368,7 +372,7 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
         @Override
         protected void onPostExecute(Integer result) {
             if(result == SUCCESS) {
-                newsFeedCursorAdapter.changeCursor(cursor);
+//                newsFeedCursorAdapter.changeCursor(cursor);
             } else {
                 if(isFragmentActive()) {
                     Log.d(TAG,"Could not refresh newsfeed toast");
@@ -380,134 +384,4 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
         }
 
     }
-
-    private static class NewsFeedViewHolder extends RecyclerView.ViewHolder{
-        protected TextView caption;
-        protected ImageView image;
-        protected View view;
-
-        public String getImageURI() {
-            return imageURI;
-        }
-
-        public void setImageURI(String imageURI) {
-            this.imageURI = imageURI;
-        }
-
-        protected String imageURI;
-
-        public NewsFeedViewHolder(View v) {
-            super(v);
-            caption = (TextView)v.findViewById(R.id.caption);
-            image = (ImageView)v.findViewById(R.id.newsfeed_image);
-            view = v;
-        }
-
-    }
-
-    private class NewsFeedCursorAdapter extends CursorRecyclerViewAdapter<NewsFeedViewHolder> {
-
-        Context context;
-        int targetImageWidth;
-
-        public NewsFeedCursorAdapter(Context context, Cursor cursor) {
-            super(context, cursor);
-            this.context = context;
-        }
-
-        @Override
-        public void onBindViewHolder(NewsFeedViewHolder newsFeedViewHolder, Cursor cursor) {
-            final NewsFeedItem newsFeedItem = NewsFeedDataSource.cursorToNewsFeedItem(cursor);
-            Log.d(TAG, "onBindViewHolder id:" + newsFeedItem.getId() + " dimentions:" + newsFeedItem.getDimentions());
-            newsFeedViewHolder.caption.setText(newsFeedItem.getCaption());
-            // get the width of imageview.
-            int targetImageWidth = getTargetImageWidth(getContext());
-            int targetImageHeight = newsFeedItem.height*targetImageWidth/newsFeedItem.width;
-            Log.d(TAG,"Setting image view to height " + targetImageHeight);
-            newsFeedViewHolder.image.getLayoutParams().height = targetImageHeight;
-            Picasso.with(context)
-                    .load(newsFeedItem.getUrl()).resize(targetImageWidth,targetImageHeight).placeholder(R.drawable.placeholder)
-                    .into(newsFeedViewHolder.image);
-//            Picasso.with(context)
-//                    .load(newsFeedItem.getUrl()).placeholder(R.drawable.placeholder)
-//                    .into(newsFeedViewHolder.image);
-
-            newsFeedViewHolder.view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int itemPosition = recyclerNewsFeedView.getChildPosition(v);
-                    Log.d(APP_TAG, "Pos: " + itemPosition + "URL: "+newsFeedItem.getUrl());
-                    Intent intent = new Intent();
-                    intent.setAction(Intent.ACTION_VIEW);
-                    intent.setDataAndType(Uri.parse(newsFeedItem.getUrl()),"image/*");
-                    startActivity(intent);
-                }
-            });
-
-
-        }
-
-        @Override
-        public NewsFeedViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-            View itemView = LayoutInflater.
-                    from(viewGroup.getContext()).
-                    inflate(R.layout.news_feed_card, viewGroup, false);
-
-            return new NewsFeedViewHolder(itemView);
-        }
-
-        private int getTargetImageWidth(Context context) {
-            if(targetImageWidth == 0) {
-                int width = (int)(DeviceDimensionsHelper.getDisplayWidth(context) - 2*DeviceDimensionsHelper.convertDpToPixel(CARD_MARGIN,context));
-                targetImageWidth = width;
-            }
-            return  targetImageWidth;
-
-        }
-    }
-
-    private class NewsFeedAdapter extends RecyclerView.Adapter<NewsFeedViewHolder> {
-
-        private List<NewsFeedItem> newsFeedItems;
-        private Context context;
-
-        public NewsFeedAdapter(List<NewsFeedItem> newsFeedItems, Context context) {
-            this.newsFeedItems = newsFeedItems;
-            this.context = context;
-        }
-
-        public void addNewsFeedItem(NewsFeedItem newsFeedItem) {
-            newsFeedItems.add(newsFeedItem);
-            notifyItemInserted(newsFeedItems.size()-1);
-        }
-
-        @Override
-        public NewsFeedViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-            Log.d(TAG, "onCreateViewHolder i:" + i);
-            View itemView = LayoutInflater.
-                    from(viewGroup.getContext()).
-                    inflate(R.layout.news_feed_card, viewGroup, false);
-
-            return new NewsFeedViewHolder(itemView);
-        }
-
-
-
-        @Override
-        public void onBindViewHolder(NewsFeedViewHolder newsFeedViewHolder, int i) {
-            Log.d(TAG,"onBindViewHolder i:" + i);
-            NewsFeedItem newsFeedItem = newsFeedItems.get(i);
-            newsFeedViewHolder.caption.setText(newsFeedItem.getCaption());
-            Picasso.with(context)
-                    .load(newsFeedItem.getUrl())
-                    .into(newsFeedViewHolder.image);
-        }
-
-        @Override
-        public int getItemCount() {
-            return newsFeedItems.size();
-        }
-
-    }
-
 }

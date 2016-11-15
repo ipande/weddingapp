@@ -4,15 +4,17 @@ import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcel;
 
 /**
  * Created by parth.mehta on 10/10/15.
  */
+@Parcel
 public class NewsFeedItem {
-    private Long _id;
-    private String url;
-    private String caption;
-    private String mediaType;
+    public Long _id;
+    public String url;
+    public String caption;
+    public String mediaType;
     public int width;
     public int height;
 

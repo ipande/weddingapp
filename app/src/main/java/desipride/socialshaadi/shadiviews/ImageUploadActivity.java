@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -39,6 +40,7 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcels;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -47,6 +49,7 @@ import java.io.InputStreamReader;
 import desipride.socialshaadi.R;
 import desipride.socialshaadi.desipride.socialshaadi.utils.ConfigData;
 import desipride.socialshaadi.desipride.socialshaadi.utils.ImageLoader;
+import desipride.socialshaadi.shadidata.NewsFeedItem;
 
 import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.CONNECTION_ERR;
 import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.CONNECTION_TIMEOUT_MS;
@@ -78,6 +81,7 @@ public class ImageUploadActivity extends ActionBarActivity implements View.OnCli
     private static final String CURRENT_PIC = "currentpic_";
     private static final String JPEG_EXT = ".jpeg";
     private static final String CAPTION = "caption";
+    public static int ID = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +115,8 @@ public class ImageUploadActivity extends ActionBarActivity implements View.OnCli
             bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
             byte[] data = baos.toByteArray();
             final Intent resultIntent = new Intent();
+            final String dimentions = getJsonDimentions(bitmap.getWidth(),bitmap.getHeight());
+
             if(imgRef !=null) {
                 UploadTask uploadTask = imgRef.putBytes(data);
                 uploadTask.addOnFailureListener(new OnFailureListener() {
@@ -149,7 +155,9 @@ public class ImageUploadActivity extends ActionBarActivity implements View.OnCli
                                         Log.e(TAG,"Could not update caption because: "+exception);
                                     }
                                 });
+                        NewsFeedItem newItem = new NewsFeedItem(ID++,picURL,caption,dimentions);
                         resultIntent.putExtra("img_added", picURL);
+                        resultIntent.putExtra("NewsfeedItem", Parcels.wrap(newItem));
                         finish();
 
                     }
