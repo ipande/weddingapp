@@ -2,12 +2,9 @@ package desipride.socialshaadi.shadiviews;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -19,50 +16,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.gson.Gson;
-import com.squareup.picasso.Picasso;
+import com.google.firebase.database.ValueEventListener;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.parceler.Parcels;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.List;
 
-import butterknife.OnClick;
 import desipride.socialshaadi.BuildConfig;
 import desipride.socialshaadi.R;
 import desipride.socialshaadi.desipride.socialshaadi.utils.ConfigData;
-import desipride.socialshaadi.desipride.socialshaadi.utils.CursorRecyclerViewAdapter;
-import desipride.socialshaadi.desipride.socialshaadi.utils.DeviceDimensionsHelper;
-import desipride.socialshaadi.shadidata.NewsFeedDataSource;
 import desipride.socialshaadi.shadidata.NewsFeedItem;
 
-import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.APP_TAG;
 import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.CONNECTION_ERR;
-import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.CONNECTION_TIMEOUT_MS;
-import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.GET_NEWSFEED_URL;
-import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.HTTP_PREFIX;
 import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.IMAGE_UPLOAD_CANCELLED;
 import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.IMAGE_UPLOAD_FAILURE;
 import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.IMAGE_UPLOAD_SUCCESS;
-import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.NEWSFEED_NOT_REFRESHED;
 import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.SELECT_FILE;
 import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.TASK_ABORTED;
 import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.UPLOAD_IMAGE;
@@ -75,64 +49,27 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
 
     ImageView uploadPictureButton;
     FirebaseImgAdapter newsFeedAdapter;
-//    NewsFeedCursorAdapter newsFeedCursorAdapter;
     SwipeRefreshLayout newsFeedRefreshLayout;
     private RecyclerView recyclerNewsFeedView;
-    private static final int CARD_MARGIN = 10;
 
     private DatabaseReference firebaseDB;
-    private ChildEventListener mChildEventListener;
     private ArrayList<NewsFeedItem> newsfeedItems;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
 
     @Override
     public void onStart() {
         super.onStart();
-        ChildEventListener childEventListener = new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Log.d(TAG, "onChildAdded:" + dataSnapshot.getKey() + "prevChildName: "+s);
-                Log.d(TAG,"new image added: "+dataSnapshot.getValue());
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                Log.d(TAG, "onChildChanged:" + dataSnapshot.getKey() + "prevChildName: "+s);
-                Log.d(TAG,"image changed at: "+dataSnapshot.getValue());
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                Log.d(TAG, "onChildRemoved:" + dataSnapshot.getKey());
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-        firebaseDB.addChildEventListener(childEventListener);
-        mChildEventListener = childEventListener;
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        firebaseDB.removeEventListener(mChildEventListener);
-        // Clean up comments listener
         newsFeedAdapter.cleanupListener();
-
     }
 
     @Override
@@ -160,17 +97,11 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
         newsFeedAdapter = new FirebaseImgAdapter(getActivity(),firebaseDB,newsfeedItems);
         recyclerNewsFeedView.setAdapter(newsFeedAdapter);
 
-
-        //TODO reenable refresh
-//        refreshNewsFeed();
-        //launchFirebaseUpload();
-
-
-
+        refreshNewsFeed();
         newsFeedRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-//                refreshNewsFeed();
+                refreshNewsFeed();
             }
         });
         return view;
@@ -201,7 +132,7 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
     }
 
     // So that all clients can refreshNewsfeed
-    private void updateFirebaseDB(String imgName, NewsFeedItem newlyAddedItem){
+    private void updateFirebaseDB(NewsFeedItem newlyAddedItem){
         firebaseDB.push().setValue(newlyAddedItem, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
@@ -240,8 +171,7 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
                     Log.d(TAG,"This image was recently added: "+imgadded);
                     NewsFeedItem newlyAddedItem = (NewsFeedItem) Parcels.unwrap(imageSelectedIntent.getParcelableExtra("NewsfeedItem"));
                     Log.d(TAG,"Testing parceler: caption: "+newlyAddedItem.getCaption() + "img dim: " + newlyAddedItem.getDimentions());
-                    updateFirebaseDB(imgadded, newlyAddedItem);
-//                    refreshNewsFeed();
+                    updateFirebaseDB(newlyAddedItem);
                 } else if(resultCode == Activity.RESULT_CANCELED) {
                     Log.d(TAG, "Result Cancelled, image not uploaded");
                 } else if(resultCode == TASK_ABORTED) {
@@ -263,9 +193,31 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
 
     private void refreshNewsFeed() {
         newsFeedRefreshLayout.setRefreshing(true);
-        RefreshNewsFeedAsyncTask task = new RefreshNewsFeedAsyncTask(getActivity());
-        Log.d(TAG,"Refreshing news feed");
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        firebaseDB.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                ArrayList<NewsFeedItem> refreshedItems = new ArrayList<NewsFeedItem>();
+                for (DataSnapshot newsFeedItemSnapshot: dataSnapshot.getChildren()) {
+                    NewsFeedItem item = newsFeedItemSnapshot.getValue(NewsFeedItem.class);
+                    refreshedItems.add(item);
+                    Log.d(TAG,"item onRefresh: "+item.getCaption());
+                }
+
+                Log.d(TAG,"Refreshing newsfeed");
+                newsFeedAdapter.clearData();
+                newsfeedItems.clear();
+                newsfeedItems.addAll(refreshedItems);
+                newsFeedAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+            }
+        });
+
+        newsFeedRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -308,90 +260,5 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
         alertDialog.show();
 
         return true;
-    }
-
-
-
-
-
-
-    private class RefreshNewsFeedAsyncTask extends AsyncTask<Void,Void,Integer> {
-        Gson gson;
-        Context context;
-        Cursor cursor;
-        private final static int SUCCESS = 0;
-        private final static int ERROR = -1;
-        public RefreshNewsFeedAsyncTask(Context context) {
-            gson = new Gson();
-            this.context = context;
-        }
-
-
-        @Override
-        protected void onPreExecute() {
-
-        }
-
-        @Override
-        protected Integer doInBackground(Void... params) {
-            String responseData = null;
-            try {
-                final HttpParams httpParams = new BasicHttpParams();
-                HttpConnectionParams.setConnectionTimeout(httpParams, CONNECTION_TIMEOUT_MS);
-                HttpClient httpclient = new DefaultHttpClient(httpParams);
-                HttpResponse response = httpclient.execute(new HttpGet(HTTP_PREFIX + ConfigData.getServerHostname(context) + GET_NEWSFEED_URL));
-                BufferedReader reader = null;
-
-
-                reader = new BufferedReader(new InputStreamReader(
-                        response.getEntity().getContent(), "UTF-8"));
-
-                String sResponse;
-                StringBuilder s = new StringBuilder();
-
-                while ((sResponse = reader.readLine()) != null) {
-                    s = s.append(sResponse);
-                }
-                responseData = s.toString();
-                Log.v(TAG,responseData);
-            } catch (IOException e) {
-                Log.e(TAG,"",e);
-                return ERROR;
-            }
-
-            NewsFeedItem items[];
-            try {
-                items = gson.fromJson(responseData, NewsFeedItem[].class);
-            } catch(com.google.gson.JsonSyntaxException e) {
-                Log.e(TAG,"Invalid Response" ,e);
-                return ERROR;
-            }
-            Log.d(TAG,"Received " + items.length + " items in response");
-
-            for(NewsFeedItem item : items) {
-                Log.v(TAG,"Adding Item to database: " + item);
-                NewsFeedDataSource.insertNewsFeedItem(item,context);
-            }
-
-            cursor = NewsFeedDataSource.queryAllNewsFeedItemsGetCursor(context);
-
-
-            return SUCCESS;
-        }
-
-        @Override
-        protected void onPostExecute(Integer result) {
-            if(result == SUCCESS) {
-//                newsFeedCursorAdapter.changeCursor(cursor);
-            } else {
-                if(isFragmentActive()) {
-                    Log.d(TAG,"Could not refresh newsfeed toast");
-                    Toast.makeText(getActivity(),NEWSFEED_NOT_REFRESHED,Toast.LENGTH_SHORT).show();
-                }
-
-            }
-            newsFeedRefreshLayout.setRefreshing(false);
-        }
-
     }
 }
