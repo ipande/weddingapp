@@ -15,6 +15,7 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
@@ -38,7 +39,7 @@ public class FirebaseImgAdapter extends RecyclerView.Adapter<FirebaseImgAdapter.
     private Context mContext;
     private DatabaseReference mDatabaseReference;
     private ChildEventListener mChildEventListener;
-    private List<NewsFeedItem> mNewsfeedItems = new ArrayList<>();
+    private List<NewsFeedItem> mNewsfeedItems;
     int targetImageWidth;
     FirebaseStorage storage;
     StorageReference storageRef;
@@ -69,12 +70,14 @@ public class FirebaseImgAdapter extends RecyclerView.Adapter<FirebaseImgAdapter.
 
 
 
-    public FirebaseImgAdapter(final Context context, DatabaseReference ref){
+    public FirebaseImgAdapter(final Context context, DatabaseReference ref, List<NewsFeedItem> items){
         mContext = context;
         mDatabaseReference = ref;
 
 
         storage = FirebaseStorage.getInstance();
+
+        mNewsfeedItems = items;
 
         ChildEventListener childEventListener = new ChildEventListener() {
             @Override
@@ -119,6 +122,13 @@ public class FirebaseImgAdapter extends RecyclerView.Adapter<FirebaseImgAdapter.
         return mContext;
     }
 
+    public void clearData() {
+        if(mNewsfeedItems!=null) {
+            mNewsfeedItems.clear();
+            this.notifyDataSetChanged();
+        }
+    }
+
     @Override
     public FirebaseImgAdapter.NewsFeedViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.
@@ -137,14 +147,14 @@ public class FirebaseImgAdapter extends RecyclerView.Adapter<FirebaseImgAdapter.
         int targetImageHeight = currItem.height*targetImageWidth/currItem.width;
         Log.d(TAG,"Setting image view to height " + targetImageHeight);
         newsFeedViewHolder.image.getLayoutParams().height = targetImageHeight;
-//        Picasso.with(mContext)
-//                .load(currItem.getUrl()).resize(targetImageWidth,targetImageHeight).placeholder(R.drawable.placeholder)
-//                .into(newsFeedViewHolder.image);
         Log.d(TAG,"ImageURL: gs://imugweddingapp.appspot.com/"+currItem.getUrl());
         storageRef = storage.getReferenceFromUrl("gs://imugweddingapp.appspot.com/"+currItem.getUrl());
+
         Glide.with(mContext)
                 .using(new FirebaseImageLoader())
                 .load(storageRef)
+                .override(targetImageWidth,targetImageHeight)
+                .placeholder(R.drawable.placeholder)
                 .into(newsFeedViewHolder.image);
     }
 

@@ -155,7 +155,7 @@ public class ImageUploadActivity extends ActionBarActivity implements View.OnCli
                                         Log.e(TAG,"Could not update caption because: "+exception);
                                     }
                                 });
-                        NewsFeedItem newItem = new NewsFeedItem(ID++,picURL,caption,dimentions);
+                        NewsFeedItem newItem = new NewsFeedItem(System.currentTimeMillis(),picURL,caption,dimentions);
                         resultIntent.putExtra("img_added", picURL);
                         resultIntent.putExtra("NewsfeedItem", Parcels.wrap(newItem));
                         finish();

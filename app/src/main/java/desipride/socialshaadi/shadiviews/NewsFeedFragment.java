@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.ChildEventListener;
@@ -27,6 +28,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -40,13 +42,19 @@ import org.parceler.Parcels;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
+import butterknife.OnClick;
 import desipride.socialshaadi.BuildConfig;
 import desipride.socialshaadi.R;
 import desipride.socialshaadi.desipride.socialshaadi.utils.ConfigData;
+import desipride.socialshaadi.desipride.socialshaadi.utils.CursorRecyclerViewAdapter;
+import desipride.socialshaadi.desipride.socialshaadi.utils.DeviceDimensionsHelper;
 import desipride.socialshaadi.shadidata.NewsFeedDataSource;
 import desipride.socialshaadi.shadidata.NewsFeedItem;
 
+import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.APP_TAG;
 import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.CONNECTION_ERR;
 import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.CONNECTION_TIMEOUT_MS;
 import static desipride.socialshaadi.desipride.socialshaadi.utils.Constants.GET_NEWSFEED_URL;
@@ -74,6 +82,7 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
 
     private DatabaseReference firebaseDB;
     private ChildEventListener mChildEventListener;
+    private ArrayList<NewsFeedItem> newsfeedItems;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -144,15 +153,12 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
         recyclerNewsFeedView.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
+        llm.setReverseLayout(true);
+        llm.setStackFromEnd(true);
         recyclerNewsFeedView.setLayoutManager(llm);
-        newsFeedAdapter = new FirebaseImgAdapter(getActivity(),firebaseDB);
+        newsfeedItems = new ArrayList<>();
+        newsFeedAdapter = new FirebaseImgAdapter(getActivity(),firebaseDB,newsfeedItems);
         recyclerNewsFeedView.setAdapter(newsFeedAdapter);
-
-//        NewsFeedDataSource.queryAllNewsFeedItems(getActivity());
-//        newsFeedCursorAdapter = new NewsFeedCursorAdapter(getActivity(),
-//                NewsFeedDataSource.queryAllNewsFeedItemsGetCursor(getActivity()));
-//        recyclerNewsFeedView.setAdapter(newsFeedCursorAdapter);
-
 
 
         //TODO reenable refresh
@@ -206,6 +212,10 @@ public class NewsFeedFragment extends Fragment implements View.OnClickListener, 
                     Log.e(TAG,"Writing to Firebase DB failed because: "+databaseError.getMessage());
             }
         });
+
+        newlyAddedItem.setDimentions(newlyAddedItem.getDimentions());
+        newsfeedItems.add(newlyAddedItem);
+        newsFeedAdapter.notifyDataSetChanged();
     }
 
 
