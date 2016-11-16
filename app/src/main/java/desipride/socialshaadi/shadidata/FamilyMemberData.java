@@ -26,41 +26,25 @@ public class FamilyMemberData {
     private static final String PARTH_BA_INFO = "";
     private static final int ISHAN_AJJI_IMAGE = R.drawable.prabha_pande_photo_small;
 
-
-    private static final String PARTH_FOI_NAME = "Vilas Mehta a.k.a VilasFoi";
-    private static final String PARTH_FOI_RELATION = "Parth's Foiba";
-    private static final String PARTH_FOI_INFO = "";
-    private static final int PARTH_FOI_IMAGE = R.drawable.vilasfoi;
-
     private static final String MUGDHA_MOTHER_NAME = "Neela Dongre";
-    private static final String PRIYA_MOTHER_RELATION = "Priya's Mother";
-    private static final String PRIYA_MOTHER_INFO = "";
-    private static final int PRIYA_MOTHER_IMAGE = R.drawable.shilpa_shah;
+    private static final String MUGDHA_MOTHER_RELATION = "Mughda's Mother";
+    private static final String MUGDHA_MOTHER_INFO = "";
+    private static final int PRIYA_MOTHER_IMAGE = R.drawable.neela_dongre_small;
 
-    private static final String PRIYA_FATHER_NAME = "Hitank Shah";
-    private static final String PRIYA_FATHER_RELATION = "Priya's Father";
-    private static final String PRIYA_FATHER_INFO = "";
-    private static final int PRIYA_FATHER_IMAGE = R.drawable.hitank_shah;
+    private static final String MUGDHA_FATHER_NAME = "Nandan Dongre";
+    private static final String MUGDHA_FATHER_RELATION = "Mugdha's Father";
+    private static final String MUGDHA_FATHER_INFO = "";
+    private static final int PRIYA_FATHER_IMAGE = R.drawable.nandan_dongre_small;
 
-    private static final String PRIYA_SISTER_NAME = "Sonam Shah";
-    private static final String PRIYA_SISTER_RELATION = "Priya's Sister";
-    private static final String PRIYA_SISTER_INFO = "";
-    private static final int PRIYA_SISTER_IMAGE = R.drawable.sonam_shah;
+    private static final String MUGDHA_SISTER_NAME = "Shubhangi Dongre";
+    private static final String MUGDHA_SISTER_RELATION = "Mugdha's Sister";
+    private static final String MUGDHA_SISTER_INFO = "";
+    private static final int PRIYA_SISTER_IMAGE = R.drawable.shubangi_small;
 
-    private static final String PRIYA_BA_NAME = "Jaya Shah a.k.a. Jayaba";
-    private static final String PRIYA_BA_RELATION = "Priya's Grandmother";
-    private static final String PRIYA_BA_INFO = "";
-    private static final int PRIYA_BA_IMAGE = R.drawable.jayaba;
-
-    private static final String PRIYA_DADA_NAME = "Jayantilal Shah a.k.a. Dada";
-    private static final String PRIYA_DADA_RELATION = "Priya's Grandfather";
-    private static final String PRIYA_DADA_INFO = "";
-    private static final int PRIYA_DADA_IMAGE = R.drawable.dada;
-
-    private static final String PRIYA_TSUK_NAME = "Tsuki Shah";
-    private static final String PRIYA_TSUK_RELATION = "Priya's Little Sister";
-    private static final String PRIYA_TSUK_INFO = "";
-    private static final int PRIYA_TSUK_IMAGE = R.drawable.tsukduuu;
+    private static final String MUGDHA_AJJI_NAME = "Shubadha Bhagwat a.k.a Ajji";
+    private static final String MUGDHA_AJJI_RELATION = "Mugdha's Grandmother";
+    private static final String MUGDHA_AJJI_INFO = "";
+    private static final int MUGHDA_AJJI_IMG = R.drawable.shubhadha_ajji_small;
 
 
     public static FamilyMember getIshanFamilyMember(int index) {
@@ -86,19 +70,15 @@ public class FamilyMemberData {
 
     public static ArrayList<FamilyMember> getPriyaFamilyMembers() {
         if(priyaFamilyMembers == null) {
-            priyaFamilyMembers = new ArrayList<FamilyMember>(6);
+            priyaFamilyMembers = new ArrayList<FamilyMember>(4);
             FamilyMember familyMember = null;
-            familyMember = new FamilyMember(PRIYA_DADA_NAME,PRIYA_DADA_RELATION,PRIYA_DADA_INFO,PRIYA_DADA_IMAGE);
+            familyMember = new FamilyMember(MUGDHA_AJJI_NAME, MUGDHA_AJJI_RELATION, MUGDHA_AJJI_INFO, MUGHDA_AJJI_IMG);
             priyaFamilyMembers.add(familyMember);
-            familyMember = new FamilyMember(PRIYA_BA_NAME,PRIYA_BA_RELATION,PRIYA_BA_INFO,PRIYA_BA_IMAGE);
+            familyMember = new FamilyMember(MUGDHA_MOTHER_NAME, MUGDHA_MOTHER_RELATION, MUGDHA_MOTHER_INFO,PRIYA_MOTHER_IMAGE);
             priyaFamilyMembers.add(familyMember);
-            familyMember = new FamilyMember(MUGDHA_MOTHER_NAME,PRIYA_MOTHER_RELATION,PRIYA_MOTHER_INFO,PRIYA_MOTHER_IMAGE);
+            familyMember = new FamilyMember(MUGDHA_FATHER_NAME, MUGDHA_FATHER_RELATION, MUGDHA_FATHER_INFO,PRIYA_FATHER_IMAGE);
             priyaFamilyMembers.add(familyMember);
-            familyMember = new FamilyMember(PRIYA_FATHER_NAME,PRIYA_FATHER_RELATION,PRIYA_FATHER_INFO,PRIYA_FATHER_IMAGE);
-            priyaFamilyMembers.add(familyMember);
-            familyMember = new FamilyMember(PRIYA_SISTER_NAME,PRIYA_SISTER_RELATION,PRIYA_SISTER_INFO,PRIYA_SISTER_IMAGE);
-            priyaFamilyMembers.add(familyMember);
-            familyMember = new FamilyMember(PRIYA_TSUK_NAME,PRIYA_TSUK_RELATION,PRIYA_TSUK_INFO,PRIYA_TSUK_IMAGE);
+            familyMember = new FamilyMember(MUGDHA_SISTER_NAME, MUGDHA_SISTER_RELATION, MUGDHA_SISTER_INFO,PRIYA_SISTER_IMAGE);
             priyaFamilyMembers.add(familyMember);
         }
         return priyaFamilyMembers;
